@@ -1,20 +1,18 @@
 import React from "react";
-
+import NearbyStore from "./Nearbystore";
 function Home() {
   return (
     <div style={styles.container}>
       
-      {/* Welcome Section */}
       <h1 style={styles.heading}>Welcome to MarketMate 🛒</h1>
       
       <p style={styles.subText}>
         Find nearby stores, compare prices, and shop smarter!
       </p>
 
-      {/* Cards Section */}
       <div style={styles.cardContainer}>
 
-        <div style={styles.card}>
+        {/* <div style={styles.card}>
           <h3>🏪 Nearby Stores</h3>
           <p>Explore shops around your location.</p>
         </div>
@@ -27,7 +25,9 @@ function Home() {
         <div style={styles.card}>
           <h3>💸 Best Deals</h3>
           <p>Get discounts and compare prices easily.</p>
-        </div>
+        </div> */}
+
+        <NearbyStore/>
 
       </div>
 

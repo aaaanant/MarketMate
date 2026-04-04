@@ -1,0 +1,15 @@
+.viewBtn {
+  background: linear-gradient(135deg, #7b61ff, #6c4eff);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.viewBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
