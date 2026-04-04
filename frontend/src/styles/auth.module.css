@@ -1,0 +1,142 @@
+/* Container */
+.container {
+  min-height: 80vh;
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+
+}
+
+/* Card */
+.card {
+  margin-top: 2vw;
+  flex: 1;
+  display: flex;
+  max-width: 1000px;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* LEFT */
+.left {
+  width: 50%;
+  background: linear-gradient(135deg, #d8d2ff, #7a64f6);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.left h1 {
+  font-size: 28px;
+  margin: 20px 0;
+}
+
+.left span {
+  color: #6c4eff;
+}
+
+.left p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.left ul {
+  padding-left: 20px;
+}
+
+.left li {
+  margin-bottom: 10px;
+}
+
+/* Icon */
+.icon {
+  background: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* RIGHT */
+.right {
+  width: 50%;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.right h2 {
+  font-size: 24px;
+}
+
+.subText {
+  color: gray;
+  margin-bottom: 20px;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form input {
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: white;
+  color: black;
+  outline: none;
+}
+
+.form input:focus {
+  border-color: #7b61ff;
+}
+
+/* Checkbox */
+.checkbox {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+
+/* Button */
+.signupBtn {
+  background: linear-gradient(to right, #7b61ff, #6c4eff);
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.signupBtn:hover {
+  opacity: 0.9;
+}
+
+/* Login text */
+.loginText {
+  margin-top: 15px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.loginText a {
+  color: #7b61ff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.loginText a:hover {
+  text-decoration: underline;
+}

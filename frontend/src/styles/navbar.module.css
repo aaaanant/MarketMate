@@ -1,0 +1,67 @@
+/* Navbar Container */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 50px;
+  height: 70px;
+
+  background: linear-gradient(135deg, #7b61ff, #6c4eff);
+  color: white;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Logo */
+.logo {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+/* Search */
+.search {
+  padding: 12px 18px;
+  width: 450px;
+  max-width: 500px;
+
+  border-radius: 30px;
+  border: none;
+  outline: none;
+
+  font-size: 16px;
+  background: white;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: 0.2s;
+}
+
+/* 🔥 NO ZOOM (only highlight) */
+.search:focus {
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+}
+
+/* Links */
+.links {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.links a {
+  color: white;
+  text-decoration: none;
+
+  font-size: 20px;
+  font-weight: 500;
+
+  transition: 0.2s;
+}
+
+.links a:hover {
+  opacity: 0.8;
+}
