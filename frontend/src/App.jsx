@@ -6,6 +6,7 @@ import Footer from "./component/extrapages/Footer"
 
 
 import Home from "./component/pages/Home";
+import Cart from "./component/pages/Cart";
 import Login from "./component/pages/Login";
 import Signup from "./component/pages/Signup";
 
@@ -18,6 +19,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/cart" element={<Cart />} />
+
       </Routes>
     <Footer/>
     </>
