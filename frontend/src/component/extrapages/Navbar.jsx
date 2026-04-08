@@ -4,6 +4,8 @@ import styles from "../../styles/navbar.module.css";
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -16,25 +18,41 @@ function Navbar() {
       {/* Logo */}
       <h2 className={styles.logo}>MarketMate</h2>
 
-      {/* Search */}
+      {/* 🔍 Search Icon (Mobile) */}
+      <div
+        className={styles.searchIcon}
+        onClick={() => setShowSearch(!showSearch)}
+      >
+        🔍
+      </div>
+
+      {/* Search Input */}
       <input
         type="text"
         placeholder="Search..."
-        className={styles.search}
+        className={`${styles.search} ${showSearch ? styles.showSearch : ""}`}
       />
 
-      {/* Links */}
-     <div className={styles.links}>
-  <Link to="/">Home</Link>
-  <Link to="/stores">Stores</Link>
-  <Link to="/cart">🛒Cart</Link>
+      {/* ☰ Hamburger */}
+      <div
+        className={styles.menuIcon}
+        onClick={() => setOpen(!open)}
+      >
+        ☰
+      </div>
 
-  {!isLoggedIn ? (
-    <Link to="/login" className={styles.authBtn}>Login</Link>
-  ) : (
-    <Link to="/profile" className={styles.authBtn}>My Profile</Link>
-  )}
-</div>
+      {/* Links */}
+      <div className={`${styles.links} ${open ? styles.show : ""}`}>
+        <Link to="/">Home</Link>
+        <Link to="/stores">Stores</Link>
+        <Link to="/cart">🛒Cart</Link>
+
+        {!isLoggedIn ? (
+          <Link to="/login">Login</Link>
+        ) : (
+          <Link to="/profile">My Profile</Link>
+        )}
+      </div>
 
     </div>
   );

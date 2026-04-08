@@ -6,13 +6,37 @@ import ViewStoreButton from "../extrapages/Viewstorebutton";
 
 const NearbyStore = () => {
   const [products, setProducts] = useState([]);
+  const [userLocation, setUserLocation] = useState(null);
 
+  // 🔥 GET USER LOCATION (ON LOAD)
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        console.log("User Location:", lat, lng); // debug
+        setUserLocation({ lat, lng });
+      },
+      (err) => {
+        console.log("Location Error:", err);
+        alert("Location access denied. Using default.");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
+  }, []);
+
+  // 🔥 FETCH PRODUCTS
   useEffect(() => {
     fetch("https://dummyjson.com/products?limit=4")
       .then((res) => res.json())
       .then((data) => {
 
-        // 🔥 Add shop locations (lat, lng)
+        // 🧠 Assign nearby shop locations (Dehradun area)
         const productsWithLocation = data.products.map((item, index) => ({
           ...item,
           lat:
@@ -40,23 +64,14 @@ const NearbyStore = () => {
 
   // 🔥 ROUTE FUNCTION (USER → SHOP)
   const handleViewRoute = (shopLat, shopLng) => {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const userLat = pos.coords.latitude;
-        const userLng = pos.coords.longitude;
-
-        const url = `https://www.google.com/maps/dir/${userLat},${userLng}/${shopLat},${shopLng}`;
-
-        window.open(url, "_blank");
-      },
-      () => {
-        alert("Please allow location access");
-
-        // 🔥 fallback (without user location)
-        const url = `https://www.google.com/maps/dir/?api=1&destination=${shopLat},${shopLng}`;
-        window.open(url, "_blank");
-      }
-    );
+    if (userLocation) {
+      const url = `https://www.google.com/maps/dir/${userLocation.lat},${userLocation.lng}/${shopLat},${shopLng}`;
+      window.open(url, "_blank");
+    } else {
+      // fallback
+      const url = `https://www.google.com/maps/dir/?api=1&destination=${shopLat},${shopLng}`;
+      window.open(url, "_blank");
+    }
   };
 
   return (
@@ -76,14 +91,14 @@ const NearbyStore = () => {
 
             <div className={styles.buttons}>
 
-              {/* 🔥 VIEW ROUTE BUTTON */}
+              {/* 🔥 VIEW ROUTE */}
               <ViewStoreButton
                 onClick={() => handleViewRoute(item.lat, item.lng)}
               />
 
               {/* 🛒 ADD TO CART */}
               <AddToCartButton
-                onClick={() => alert("Added to cart")}
+                onClick={() => alert(`${item.title} added to cart`)}
               />
 
             </div>
