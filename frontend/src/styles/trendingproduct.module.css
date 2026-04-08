@@ -1,0 +1,69 @@
+.container {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.heading {
+  font-size: 26px;
+  margin-bottom: 25px;
+}
+
+/* cards layout */
+.cardContainer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* card */
+.card {
+  width: 220px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.card img {
+  width: 100%;
+  height: 130px;
+  object-fit: contain;
+}
+
+.card h3 {
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.card p {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* buttons */
+.btnGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.viewBtn {
+  flex: 1;
+  background: #7b61ff;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.cartBtn {
+  flex: 1;
+  background: orange;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}

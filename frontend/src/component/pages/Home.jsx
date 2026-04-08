@@ -1,5 +1,6 @@
 import React from "react";
 import NearbyStore from "./Nearbystore";
+import Trendingproduct from "./Trendingproduct";
 function Home() {
   return (
     <div style={styles.container}>
@@ -28,7 +29,7 @@ function Home() {
         </div> */}
 
         <NearbyStore/>
-
+          <Trendingproduct/>
       </div>
 
     </div>
