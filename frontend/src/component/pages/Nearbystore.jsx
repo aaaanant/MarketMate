@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styles from "../../styles/nearbyStore.module.css";
+import styles from "../../styles/nearbystore.module.css";
 
 import AddToCartButton from "../extrapages/Cartbutton";
 import ViewStoreButton from "../extrapages/Viewstorebutton";
