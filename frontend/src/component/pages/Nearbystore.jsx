@@ -8,14 +8,14 @@ const NearbyStore = () => {
   const [products, setProducts] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
 
-  // 🔥 GET USER LOCATION (ON LOAD)
+  // 📍 GET USER LOCATION
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
 
-        console.log("User Location:", lat, lng); // debug
+        console.log("User Location:", lat, lng);
         setUserLocation({ lat, lng });
       },
       (err) => {
@@ -30,13 +30,13 @@ const NearbyStore = () => {
     );
   }, []);
 
-  // 🔥 FETCH PRODUCTS
+  // 🛒 FETCH PRODUCTS
   useEffect(() => {
-    fetch("https://dummyjson.com/products?limit=4")
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("https://dummyjson.com/products?limit=4");
+        const data = await res.json();
 
-        // 🧠 Assign nearby shop locations (Dehradun area)
         const productsWithLocation = data.products.map((item, index) => ({
           ...item,
           lat:
@@ -58,17 +58,20 @@ const NearbyStore = () => {
         }));
 
         setProducts(productsWithLocation);
-      })
-      .catch((err) => console.log(err));
+      } catch (err) {
+        console.log("Fetch Error:", err);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
-  // 🔥 ROUTE FUNCTION (USER → SHOP)
+  // 🗺️ ROUTE FUNCTION
   const handleViewRoute = (shopLat, shopLng) => {
     if (userLocation) {
       const url = `https://www.google.com/maps/dir/${userLocation.lat},${userLocation.lng}/${shopLat},${shopLng}`;
       window.open(url, "_blank");
     } else {
-      // fallback
       const url = `https://www.google.com/maps/dir/?api=1&destination=${shopLat},${shopLng}`;
       window.open(url, "_blank");
     }
@@ -78,34 +81,46 @@ const NearbyStore = () => {
     <div className={styles.container}>
       <h2 className={styles.heading}>Nearby Stores 🏪</h2>
 
-      <div className={styles.grid}>
-        {products.map((item) => (
-          <div key={item.id} className={styles.card}>
+      {products.length === 0 ? (
+        <p>Loading stores...</p>
+      ) : (
+        <div className={styles.grid}>
+          {products.map((item) => (
+            <div key={item.id} className={styles.card}>
+              
+              {/* IMAGE */}
+              <img src={item.thumbnail} alt={item.title} />
 
-            {/* IMAGE */}
-            <img src={item.thumbnail} alt={item.title} />
+              {/* TITLE */}
+              <h3>{item.title}</h3>
 
-            <h3>{item.title}</h3>
+              {/* PRICE */}
+              <p className={styles.price}>₹ {item.price}</p>
 
-            <p className={styles.price}>₹ {item.price}</p>
+              {/* BUTTONS */}
+              <div className={styles.buttons}>
 
-            <div className={styles.buttons}>
+                {/* VIEW STORE */}
+                <ViewStoreButton
+                  onClick={() => handleViewRoute(item.lat, item.lng)}
+                />
 
-              {/* 🔥 VIEW ROUTE */}
-              <ViewStoreButton
-                onClick={() => handleViewRoute(item.lat, item.lng)}
-              />
+                {/* ADD TO CART (UNIVERSAL) */}
+                <AddToCartButton
+                  product={{
+                    _id: item.id,
+                    name: item.title,
+                    price: item.price,
+                    image: item.thumbnail
+                  }}
+                />
 
-              {/* 🛒 ADD TO CART */}
-              <AddToCartButton
-                onClick={() => alert(`${item.title} added to cart`)}
-              />
+              </div>
 
             </div>
-
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

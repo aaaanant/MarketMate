@@ -1,0 +1,37 @@
+.container {
+  padding: 40px;
+  text-align: center;
+  background: #f9f9ff;
+  min-height: 100vh;
+}
+
+/* Heading */
+.heading {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.subText {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 40px;
+}
+
+/* Section */
+.section {
+  margin-top: 40px;
+}
+
+/* Section Title */
+.sectionTitle {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* 🔥 IMPORTANT: product/grid layout fix */
+.productsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
