@@ -2,10 +2,20 @@ import React from "react";
 import styles from "../../styles/cartsummary.module.css";
 
 function CartSummary({ total }) {
+  // 🔥 PROFESSIONAL FORMAT
+  const formatted = new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+  }).format(total);
+
   return (
-    <div className={styles.container}>
-      <h2>Total Bill</h2>
-      <p>₹ {total}</p>
+    <div className={styles.box}>
+      <h3>PRICE DETAILS</h3>
+
+      <div className={styles.row}>
+        <span>Total Amount</span>
+        <span>{formatted}</span>
+      </div>
     </div>
   );
 }

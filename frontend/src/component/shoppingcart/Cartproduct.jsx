@@ -4,30 +4,29 @@ import styles from "../../styles/cartproduct.module.css";
 function Cartproduct({ setTotal }) {
   const [cartItems, setCartItems] = useState([]);
 
-  // 🔥 Load cart on mount
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(data);
     calculateTotal(data);
   }, []);
 
-  // 🔥 Calculate total
+  // 🔥 TOTAL CALCULATION (FIXED)
   const calculateTotal = (items) => {
     const total = items.reduce(
       (acc, item) => acc + item.price * item.quantity,
       0
     );
-    setTotal(total);
+
+    // ✔ fix floating issue
+    setTotal(parseFloat(total.toFixed(2)));
   };
 
-  // 🔥 Update cart
   const updateCart = (updated) => {
     setCartItems(updated);
     localStorage.setItem("cart", JSON.stringify(updated));
     calculateTotal(updated);
   };
 
-  // ➕ Increase
   const increaseQty = (id) => {
     const updated = cartItems.map((item) =>
       item._id === id
@@ -37,7 +36,6 @@ function Cartproduct({ setTotal }) {
     updateCart(updated);
   };
 
-  // ➖ Decrease
   const decreaseQty = (id) => {
     const updated = cartItems
       .map((item) =>
@@ -50,52 +48,49 @@ function Cartproduct({ setTotal }) {
     updateCart(updated);
   };
 
-  // ❌ Remove
   const removeItem = (id) => {
     const updated = cartItems.filter((item) => item._id !== id);
     updateCart(updated);
   };
 
+  // 🔥 EMPTY CART
+  if (cartItems.length === 0) {
+    return (
+      <div className={styles.empty}>
+        <h2>Your cart is empty 🛒</h2>
+        <p>Add some products to start shopping</p>
+      </div>
+    );
+  }
+
   return (
-    <div className={styles.container}>
-      <h2>🛒 Your Cart</h2>
+    <div>
+      {cartItems.map((item) => (
+        <div key={item._id} className={styles.card}>
+          
+          <img src={item.image} alt={item.name} className={styles.image} />
 
-      {cartItems.length === 0 ? (
-        <p>Your cart is empty</p>
-      ) : (
-        cartItems.map((item) => (
-          <div key={item._id} className={styles.card}>
-            
-            {/* Image */}
-            <img
-              src={item.image}
-              alt={item.name}
-              className={styles.image}
-            />
+          <div className={styles.info}>
+            <h3>{item.name}</h3>
 
-            {/* Info */}
-            <div className={styles.info}>
-              <h3>{item.name}</h3>
-              <p>₹ {item.price}</p>
+            {/* 🔥 PRICE FIX DISPLAY */}
+            <p>₹ {item.price.toFixed(2)}</p>
 
-              {/* Quantity */}
-              <div className={styles.qty}>
-                <button onClick={() => decreaseQty(item._id)}>-</button>
-                <span>{item.quantity}</span>
-                <button onClick={() => increaseQty(item._id)}>+</button>
-              </div>
-
-              {/* Remove */}
-              <button
-                className={styles.removeBtn}
-                onClick={() => removeItem(item._id)}
-              >
-                Remove
-              </button>
+            <div className={styles.qty}>
+              <button onClick={() => decreaseQty(item._id)}>-</button>
+              <span>{item.quantity}</span>
+              <button onClick={() => increaseQty(item._id)}>+</button>
             </div>
+
+            <button
+              className={styles.removeBtn}
+              onClick={() => removeItem(item._id)}
+            >
+              Remove
+            </button>
           </div>
-        ))
-      )}
+        </div>
+      ))}
     </div>
   );
 }

@@ -11,8 +11,8 @@ function Cart() {
   return (
     <div className={styles.container}>
 
-      {/* 🔥 TOP ROW */}
-      <div className={styles.topRow}>
+      {/* 🔥 TOP SECTION */}
+      <div className={styles.top}>
         
         <div className={styles.invite}>
           <Friendinvite />
@@ -20,12 +20,13 @@ function Cart() {
 
         <div className={styles.summary}>
           <CartSummary total={total} />
+          <button className={styles.orderBtn}>PLACE ORDER</button>
         </div>
 
       </div>
 
-      {/* 🔥 BOTTOM */}
-      <div className={styles.bottomRow}>
+      {/* 🔥 PRODUCT LIST (SCROLLABLE) */}
+      <div className={styles.products}>
         <Cartproduct setTotal={setTotal} />
       </div>
 

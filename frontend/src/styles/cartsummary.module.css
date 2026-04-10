@@ -1,18 +1,12 @@
-.container {
+.box {
   background: white;
-  border-radius: 12px;
   padding: 20px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  border-radius: 8px;
+  border: 1px solid #eee;
 }
 
-.container h2 {
-  margin-bottom: 10px;
-  font-size: 20px;
-}
-
-.container p {
-  font-size: 26px;
-  font-weight: bold;
-  color: #6c4eff;
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
 }
