@@ -1,9 +1,10 @@
 import React from "react";
-import styles from "./card.module.css";
+import styles from "../../styles/profile/profilecard.module.css";
 
-function Card({ title, icon, children }) {
+function Profilecard({ title, icon, children }) {
   return (
     <div className={styles.card}>
+      
       {title && (
         <div className={styles.header}>
           {icon && <span className={styles.icon}>{icon}</span>}
@@ -14,8 +15,9 @@ function Card({ title, icon, children }) {
       <div className={styles.content}>
         {children}
       </div>
+
     </div>
   );
 }
 
-export default Card;
+export default Profilecard;

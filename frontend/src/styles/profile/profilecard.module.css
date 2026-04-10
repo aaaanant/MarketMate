@@ -1,0 +1,32 @@
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  flex: 1;
+  min-width: 280px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.header h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.icon {
+  background: #ede9ff;
+  color: #6c4eff;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.content {
+  font-size: 14px;
+  color: #444;
+}

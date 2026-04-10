@@ -1,0 +1,27 @@
+.container {
+  padding: 30px;
+  background: #f9f9ff;
+  min-height: 100vh;
+}
+
+.grid {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.logoutBtn {
+  margin-top: 30px;
+  background: #ff4d4d;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: block;
+}
+
+.logoutBtn:hover {
+  opacity: 0.9;
+}

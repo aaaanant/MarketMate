@@ -1,0 +1,28 @@
+.header {
+  background: linear-gradient(135deg, #7b61ff, #6c4eff);
+  color: white;
+  padding: 25px;
+  border-radius: 16px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.btn {
+  margin-top: 10px;
+  background: white;
+  color: #6c4eff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
