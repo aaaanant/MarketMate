@@ -5,7 +5,6 @@ import styles from "../../styles/navbar.module.css";
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [open, setOpen] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -18,19 +17,11 @@ function Navbar() {
       {/* Logo */}
       <h2 className={styles.logo}>MarketMate</h2>
 
-      {/* 🔍 Search Icon (Mobile) */}
-      <div
-        className={styles.searchIcon}
-        onClick={() => setShowSearch(!showSearch)}
-      >
-        🔍
-      </div>
-
-      {/* Search Input */}
+      {/* 🔍 Search (always visible) */}
       <input
         type="text"
         placeholder="Search..."
-        className={`${styles.search} ${showSearch ? styles.showSearch : ""}`}
+        className={styles.search}
       />
 
       {/* ☰ Hamburger */}

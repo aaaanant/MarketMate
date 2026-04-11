@@ -1,4 +1,4 @@
-/* 🔥 Navbar Container */
+/* 🔥 Navbar */
 .navbar {
   position: sticky;
   top: 0;
@@ -13,11 +13,9 @@
 
   background: linear-gradient(135deg, #7b61ff, #6c4eff);
   color: white;
-
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* 🔥 Logo */
+/* Logo */
 .logo {
   font-size: 24px;
   font-weight: bold;
@@ -25,15 +23,14 @@
 
 /* 🔍 Search */
 .search {
-  padding: 10px 16px;
-  width: 400px;
+  padding: 10px 15px;
+  width: 350px;
 
-  border-radius: 30px;
+  border-radius: 20px;
   border: none;
   outline: none;
 
-  font-size: 16px;
-  background: white;
+  font-size: 14px;
 }
 
 /* 🔗 Links */
@@ -46,20 +43,39 @@
 .links a {
   color: white;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 17px;
+  position: relative;
+
+  transition: color 0.5s ease; /* 🔥 text smooth */
+}
+
+/* underline */
+.links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+
+  width: 0%;
+  height: 2px;
+  background: white;
+
+  transition: width 0.5s ease; /* 🔥 line smooth */
+}
+
+/* hover */
+.links a:hover {
+  color: black; /* 🔥 text black */
+}
+
+.links a:hover::after {
+  width: 100%; /* 🔥 full underline */
 }
 
 /* 🍔 Hamburger */
 .menuIcon {
   display: none;
-  font-size: 28px;
-  cursor: pointer;
-}
-
-/* 🔍 Search Icon */
-.searchIcon {
-  display: none;
-  font-size: 22px;
+  font-size: 26px;
   cursor: pointer;
 }
 
@@ -68,7 +84,7 @@
 /* ========================= */
 @media (max-width: 1024px) {
   .search {
-    width: 250px;
+    width: 200px;
   }
 }
 
@@ -77,28 +93,15 @@
 /* ========================= */
 @media (max-width: 768px) {
 
-  /* Show icons */
   .menuIcon {
     display: block;
   }
 
-  .searchIcon {
-    display: block;
-  }
-
-  /* Hide search initially */
+  /* 🔥 SMALL SEARCH SAME PLACE */
   .search {
-    display: none;
-  }
-
-  /* Show search when clicked */
-  .showSearch {
-    display: block;
-    position: absolute;
-    top: 70px;
-    left: 10px;
-    width: calc(100% - 20px);
-    z-index: 999;
+    width: 120px;
+    padding: 8px 10px;
+    font-size: 13px;
   }
 
   /* Mobile menu */
@@ -107,25 +110,22 @@
     top: 70px;
     right: 0;
 
-    width: 220px;
+    width: 200px;
     background: #6c4eff;
 
     flex-direction: column;
     align-items: flex-start;
 
-    padding: 20px;
-    gap: 15px;
+    padding: 15px;
+    gap: 10px;
 
     display: none;
-    border-radius: 0 0 0 12px;
   }
 
-  /* Show menu */
   .show {
     display: flex;
   }
 
-  /* Full width links */
   .links a {
     width: 100%;
   }

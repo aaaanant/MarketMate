@@ -6,10 +6,10 @@ const Signup = () => {
   const navigate = useNavigate();
 
   return (
-   <AuthLayout
-  isLogin={false}
-  onSwitch={() => navigate("/login")}  
-/>
+    <AuthLayout
+      isLogin={false}
+      onSwitch={() => navigate("/login")}
+    />
   );
 };
 

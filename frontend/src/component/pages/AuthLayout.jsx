@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "../../styles/auth.module.css";
 import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const AuthLayout = ({ isLogin }) => {
 
@@ -10,7 +11,10 @@ const AuthLayout = ({ isLogin }) => {
     username: "",
     email: "",
     password: "",
-    phone: ""
+    phone: "",
+    role: "user",
+    shopName: "",
+    shopAddress: ""
   });
 
   const [loading, setLoading] = useState(false);
@@ -27,36 +31,65 @@ const AuthLayout = ({ isLogin }) => {
     setLoading(true);
 
     try {
-      // ✅ ENV BASE URL
       const BASE_URL = import.meta.env.VITE_API_URL;
 
       const url = isLogin
         ? `${BASE_URL}/api/auth/login`
         : `${BASE_URL}/api/auth/signup`;
 
+      let payload = {};
+
+      if (isLogin) {
+        payload = {
+          email: formData.email,
+          password: formData.password
+        };
+      } else {
+        payload = {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone,
+          role: formData.role
+        };
+
+        if (formData.role === "shopkeeper") {
+          payload.shop = {
+            shopName: formData.shopName,
+            shopAddress: formData.shopAddress
+          };
+        }
+      }
+
       const res = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
       console.log("Response:", data);
 
-      // ✅ Success
       if (res.ok) {
         if (isLogin) {
           localStorage.setItem("token", data.token);
-          navigate("/");
+
+          const decoded = jwtDecode(data.token);
+
+          if (decoded.role === "shopkeeper") {
+            navigate("/shop-dashboard");
+          } else {
+            navigate("/");
+          }
+
           window.location.reload();
         } else {
           alert("Signup successful! Please login.");
           navigate("/login");
         }
       } else {
-        // ❌ Error handling
         alert(data.message || "Something went wrong");
       }
 
@@ -141,6 +174,39 @@ const AuthLayout = ({ isLogin }) => {
                   onChange={handleChange}
                   required
                 />
+
+                {/* ROLE SELECT */}
+                <select
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                >
+                  <option value="user">User</option>
+                  <option value="shopkeeper">Shopkeeper</option>
+                </select>
+
+                {/* SHOP SECTION */}
+                {formData.role === "shopkeeper" && (
+                  <div className={styles.shopSection}>
+                    <p className={styles.shopTitle}>🏪 Shop Details</p>
+
+                    <input
+                      name="shopName"
+                      type="text"
+                      placeholder="Shop Name"
+                      onChange={handleChange}
+                      required
+                    />
+
+                    <input
+                      name="shopAddress"
+                      type="text"
+                      placeholder="Shop Address"
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                )}
 
                 <div className={styles.checkbox}>
                   <input type="checkbox" required />

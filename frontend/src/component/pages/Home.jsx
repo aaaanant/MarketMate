@@ -1,10 +1,15 @@
 import React from "react";
+import Useraddress from "../address/Useraddress";
+import Slider from "../Slider";
 import NearbyStore from "./Nearbystore";
 import Trendingproduct from "./Trendingproduct";
 import styles from "../../styles/home.module.css";
 
 function Home() {
   return (
+    <>
+    <Useraddress/>
+    <Slider/>
     <div className={styles.container}>
 
       <h1 className={styles.heading}>Welcome to MarketMate 🛒</h1>
@@ -24,6 +29,7 @@ function Home() {
       </div>
 
     </div>
+    </>
   );
 }
 

@@ -1,4 +1,4 @@
-require("dotenv").config();   // ✅ ADD THIS LINE
+require("dotenv").config({ path: __dirname + "/.env" }); // 🔥 FIXED
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -12,6 +12,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+
+// 🔥 DEBUG (VERY IMPORTANT)
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))

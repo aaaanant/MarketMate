@@ -5,18 +5,37 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+
   email: {
     type: String,
     required: true,
     unique: true
   },
+
   phone: {
     type: String
   },
+
   password: {
     type: String,
     required: true
+  },
+
+  role: {
+    type: String,
+    enum: ["user", "shopkeeper"],
+    default: "user"
+  },
+
+  shop: {
+    shopName: {
+      type: String
+    },
+    shopAddress: {
+      type: String
+    }
   }
+
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);

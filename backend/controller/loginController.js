@@ -16,13 +16,8 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    // ✅ ADD THIS CHECK
-    if (!process.env.JWT_SECRET) {
-      throw new Error("JWT_SECRET is missing in .env");
-    }
-
     const token = jwt.sign(
-      { id: user._id },
+      { id: user._id }, // ✅ important
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
@@ -33,7 +28,7 @@ const loginUser = async (req, res) => {
     });
 
   } catch (err) {
-    console.log("ERROR 👉", err);
+    console.log("LOGIN ERROR:", err);
     res.status(500).json({ message: "Error", error: err.message });
   }
 };
