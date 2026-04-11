@@ -10,6 +10,7 @@ import Cart from "./component/pages/Cart";
 import Login from "./component/pages/Login";
 import Signup from "./component/pages/Signup";
 import Myprofile from "./component/profile/myprofile";
+import Store from "./component/extrapages/Store"
 function App() {
   return (
     <>
@@ -21,6 +22,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/profile" element={<Myprofile />} />
+        <Route path="/store" element={<Store/>}/>
       </Routes>
     <Footer/>
     </>

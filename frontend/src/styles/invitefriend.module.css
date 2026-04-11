@@ -79,3 +79,37 @@
 .inviteBtn:hover {
   opacity: 0.9;
 }
+.container {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.inputBox {
+  display: flex;
+  gap: 10px;
+}
+
+.inputBox input {
+  flex: 1;
+  padding: 8px;
+}
+
+.list {
+  margin-top: 10px;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+
+.inviteBtn {
+  margin-top: 10px;
+  background: #6c4eff;
+  color: white;
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+}

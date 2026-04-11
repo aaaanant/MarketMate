@@ -8,6 +8,11 @@ function Friendinvite() {
   const handleAdd = () => {
     if (email.trim() === "") return;
 
+    if (friends.includes(email)) {
+      alert("Already added");
+      return;
+    }
+
     setFriends([...friends, email]);
     setEmail("");
   };
@@ -17,17 +22,44 @@ function Friendinvite() {
     setFriends(updated);
   };
 
-  const handleInvite = () => {
-    console.log("Inviting:", friends);
-    alert("Invites sent!");
+  const handleInvite = async () => {
+    const cartId = localStorage.getItem("cartId");
+
+    if (!cartId) {
+      alert("Cart not found");
+      return;
+    }
+
+    try {
+      for (let friendEmail of friends) {
+        const res = await fetch("http://localhost:5000/api/cart/invite", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: friendEmail,
+            cartId: cartId,
+          }),
+        });
+
+        const data = await res.json();
+        console.log(data);
+      }
+
+      alert("Invites sent successfully ✅");
+      setFriends([]);
+
+    } catch (err) {
+      console.log(err);
+      alert("Error sending invites");
+    }
   };
 
   return (
     <div className={styles.container}>
-      
       <h2 className={styles.heading}>Invite Friends 🧑‍🤝‍🧑</h2>
 
-      {/* Input + Add */}
       <div className={styles.inputBox}>
         <input
           type="email"
@@ -38,7 +70,6 @@ function Friendinvite() {
         <button onClick={handleAdd}>Add</button>
       </div>
 
-      {/* List */}
       <div className={styles.list}>
         {friends.map((friend, index) => (
           <div key={index} className={styles.listItem}>
@@ -48,13 +79,11 @@ function Friendinvite() {
         ))}
       </div>
 
-      {/* Invite Button */}
       {friends.length > 0 && (
         <button className={styles.inviteBtn} onClick={handleInvite}>
           Invite Friends
         </button>
       )}
-
     </div>
   );
 }

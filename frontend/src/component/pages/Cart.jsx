@@ -11,7 +11,6 @@ function Cart() {
   return (
     <div className={styles.container}>
 
-      {/* 🔥 TOP SECTION */}
       <div className={styles.top}>
         
         <div className={styles.invite}>
@@ -25,7 +24,6 @@ function Cart() {
 
       </div>
 
-      {/* 🔥 PRODUCT LIST (SCROLLABLE) */}
       <div className={styles.products}>
         <Cartproduct setTotal={setTotal} />
       </div>

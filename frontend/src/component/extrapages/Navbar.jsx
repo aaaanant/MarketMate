@@ -35,7 +35,7 @@ function Navbar() {
       {/* Links */}
       <div className={`${styles.links} ${open ? styles.show : ""}`}>
         <Link to="/">Home</Link>
-        <Link to="/stores">Stores</Link>
+        <Link to="/store">Stores</Link>
         <Link to="/cart">🛒Cart</Link>
 
         {!isLoggedIn ? (
