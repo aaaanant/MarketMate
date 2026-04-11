@@ -4,7 +4,12 @@ import styles from "../../styles/cartbutton.module.css";
 const AddToCartButton = ({ product }) => {
 
   const handleAddToCart = () => {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // 🔥 User ka unique cart key
+    const token = localStorage.getItem("token");
+    const cartKey = token ? `cart_${token}` : "cart_guest";
+
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
     const exists = cart.find((item) => item._id === product._id);
 
@@ -18,7 +23,7 @@ const AddToCartButton = ({ product }) => {
       cart.push({ ...product, quantity: 1 });
     }
 
-    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem(cartKey, JSON.stringify(cart));
 
     alert("Added to cart ✅");
   };

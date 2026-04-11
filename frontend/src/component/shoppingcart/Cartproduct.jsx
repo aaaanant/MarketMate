@@ -4,34 +4,33 @@ import styles from "../../styles/cartproduct.module.css";
 function Cartproduct({ setTotal }) {
   const [cartItems, setCartItems] = useState([]);
 
+  // 🔥 User ka unique cart key
+  const token = localStorage.getItem("token");
+  const cartKey = token ? `cart_${token}` : "cart_guest";
+
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("cart")) || [];
+    const data = JSON.parse(localStorage.getItem(cartKey)) || [];
     setCartItems(data);
     calculateTotal(data);
   }, []);
 
-  // 🔥 TOTAL CALCULATION (FIXED)
   const calculateTotal = (items) => {
     const total = items.reduce(
       (acc, item) => acc + item.price * item.quantity,
       0
     );
-
-    // ✔ fix floating issue
     setTotal(parseFloat(total.toFixed(2)));
   };
 
   const updateCart = (updated) => {
     setCartItems(updated);
-    localStorage.setItem("cart", JSON.stringify(updated));
+    localStorage.setItem(cartKey, JSON.stringify(updated));
     calculateTotal(updated);
   };
 
   const increaseQty = (id) => {
     const updated = cartItems.map((item) =>
-      item._id === id
-        ? { ...item, quantity: item.quantity + 1 }
-        : item
+      item._id === id ? { ...item, quantity: item.quantity + 1 } : item
     );
     updateCart(updated);
   };
@@ -39,12 +38,9 @@ function Cartproduct({ setTotal }) {
   const decreaseQty = (id) => {
     const updated = cartItems
       .map((item) =>
-        item._id === id
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
+        item._id === id ? { ...item, quantity: item.quantity - 1 } : item
       )
       .filter((item) => item.quantity > 0);
-
     updateCart(updated);
   };
 
@@ -53,7 +49,6 @@ function Cartproduct({ setTotal }) {
     updateCart(updated);
   };
 
-  // 🔥 EMPTY CART
   if (cartItems.length === 0) {
     return (
       <div className={styles.empty}>
@@ -67,13 +62,11 @@ function Cartproduct({ setTotal }) {
     <div>
       {cartItems.map((item) => (
         <div key={item._id} className={styles.card}>
-          
+
           <img src={item.image} alt={item.name} className={styles.image} />
 
           <div className={styles.info}>
             <h3>{item.name}</h3>
-
-            {/* 🔥 PRICE FIX DISPLAY */}
             <p>₹ {item.price.toFixed(2)}</p>
 
             <div className={styles.qty}>
@@ -89,6 +82,7 @@ function Cartproduct({ setTotal }) {
               Remove
             </button>
           </div>
+
         </div>
       ))}
     </div>
