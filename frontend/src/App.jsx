@@ -11,6 +11,10 @@ import Login from "./component/pages/Login";
 import Signup from "./component/pages/Signup";
 import Myprofile from "./component/profile/myprofile";
 import Store from "./component/extrapages/Store"
+
+import Paymentgateway from "./component/pages/Paymentgateway";
+
+import Shopdashboard from "./component/pages/Shopdashboard";
 function App() {
   return (
     <>
@@ -23,6 +27,10 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/profile" element={<Myprofile />} />
         <Route path="/store" element={<Store/>}/>
+
+<Route path="/payment" element={<Paymentgateway />} />
+
+<Route path="/shopdashboard" element={<Shopdashboard />} />
       </Routes>
     <Footer/>
     </>

@@ -1,59 +1,69 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../styles/store.module.css";
-import AddToCartButton from "../extrapages/Cartbutton";
-import ViewStoreButton from "../extrapages/Viewstorebutton";
-
+import Cartbutton from "../buttons/Cartbutton";
+import ViewStoreButton from "../buttons/Viewstorebutton";
+import Productcard from "../productcard/Productcard";
+import Useraddress from "../address/Useraddress";
 function Store() {
-  const [products, setProducts] = useState([]);
+  const [apiProducts, setApiProducts] = useState([]);
+  const [localProducts, setLocalProducts] = useState([]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("https://dummyjson.com/products?limit=12");
-        const data = await res.json();
-        setProducts(data.products);
-      } catch (err) {
-        console.log("Error:", err);
-      }
-    };
+    fetch("https://dummyjson.com/products?limit=12")
+      .then((res) => res.json())
+      .then((data) => setApiProducts(data.products));
 
-    fetchProducts();
+    const saved = JSON.parse(localStorage.getItem("products")) || [];
+    setLocalProducts(saved);
   }, []);
 
   return (
+    <>
+    <Useraddress/>
     <div className={styles.container}>
-      <h2 className={styles.heading}>🏪 Store Products</h2>
+      <h2 className={styles.heading}>Store Products</h2>
 
-      {products.length === 0 ? (
-        <p>Loading products...</p>
-      ) : (
-        <div className={styles.grid}>
-          {products.map((item) => (
-            <div key={item.id} className={styles.card}>
+      <div className={styles.grid}>
+        
+        {localProducts.map((item, index) => (
+          <Productcard
+            key={index}
+            product={{
+              image: "https://via.placeholder.com/150",
+              title: item.name,
+              price: item.price,
+            }}
+          >
+            <ViewStoreButton
+              onClick={() => window.open(item.mapLink, "_blank")}
+            />
+            <Cartbutton product={item} />
+          </Productcard>
+        ))}
 
-              <img src={item.thumbnail} alt={item.title} />
-
-              <h3>{item.title}</h3>
-
-              <p className={styles.price}>₹ {Math.round(item.price * 84)}</p>
-
-              <div className={styles.buttons}>
-                <ViewStoreButton onClick={() => alert("Store location coming soon!")} />
-                <AddToCartButton
-                  product={{
-                    _id: item.id,
-                    name: item.title,
-                    price: Math.round(item.price * 84),
-                    image: item.thumbnail,
-                  }}
-                />
-              </div>
-
-            </div>
-          ))}
-        </div>
-      )}
+        {apiProducts.map((item) => (
+          <Productcard
+            key={item.id}
+            product={{
+              image: item.thumbnail,
+              title: item.title,
+              price: Math.round(item.price * 84),
+            }}
+          >
+            <ViewStoreButton
+              onClick={() =>
+                window.open(
+                  `https://www.google.com/maps/search/?api=1&query=${item.title}`,
+                  "_blank"
+                )
+              }
+            />
+            <Cartbutton product={item} />
+          </Productcard>
+        ))}
+      </div>
     </div>
+    </>
   );
 }
 

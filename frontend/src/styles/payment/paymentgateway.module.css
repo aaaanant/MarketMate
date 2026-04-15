@@ -1,0 +1,43 @@
+.container {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f5f6ff;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 350px;
+  text-align: center;
+
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.productBox {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f1f1ff;
+  border-radius: 10px;
+}
+
+.payBtn {
+  background: linear-gradient(135deg, #7b61ff, #6c4eff);
+  color: white;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  transition: 0.3s;
+}
+
+.payBtn:hover {
+  opacity: 0.9;
+}

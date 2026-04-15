@@ -1,21 +1,20 @@
 import React from "react";
-import styles from "../../styles/cartbutton.module.css";
+import styles from "../../styles/button/cartbutton.module.css";
 
-const AddToCartButton = ({ product }) => {
+function Cartbutton({ product }) {
 
   const handleAddToCart = () => {
 
-    // 🔥 User ka unique cart key
     const token = localStorage.getItem("token");
     const cartKey = token ? `cart_${token}` : "cart_guest";
 
     let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
-    const exists = cart.find((item) => item._id === product._id);
+    const exists = cart.find((item) => item.id === product.id);
 
     if (exists) {
       cart = cart.map((item) =>
-        item._id === product._id
+        item.id === product.id
           ? { ...item, quantity: item.quantity + 1 }
           : item
       );
@@ -33,6 +32,6 @@ const AddToCartButton = ({ product }) => {
       Add to Cart
     </button>
   );
-};
+}
 
-export default AddToCartButton;
+export default Cartbutton;

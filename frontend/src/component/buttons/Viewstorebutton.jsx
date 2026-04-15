@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../styles/viewstorebutton.module.css";
+import styles from "../../styles/button/viewstorebutton.module.css";
 
 const ViewStoreButton = ({ onClick }) => {
   return (

@@ -3,7 +3,7 @@ import styles from "../../styles/auth.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-const AuthLayout = ({ isLogin }) => {
+const AuthLayout = ({ isLogin, onSwitch }) => {
 
   const navigate = useNavigate();
 
@@ -17,8 +17,6 @@ const AuthLayout = ({ isLogin }) => {
     shopAddress: ""
   });
 
-  const [loading, setLoading] = useState(false);
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -28,7 +26,6 @@ const AuthLayout = ({ isLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
       const BASE_URL = import.meta.env.VITE_API_URL;
@@ -77,36 +74,34 @@ const AuthLayout = ({ isLogin }) => {
           localStorage.setItem("token", data.token);
 
           const decoded = jwtDecode(data.token);
+          console.log("Decoded:", decoded);
 
-          if (decoded.role === "shopkeeper") {
-            navigate("/shop-dashboard");
-          } else {
-            navigate("/");
-          }
+          const userRole = decoded.role || decoded.user?.role;
+
+          localStorage.setItem("role", userRole);
+
+         if (userRole === "shopkeeper") {
+  navigate("/shopdashboard"); 
+} else {
+  navigate("/");
+}
 
           window.location.reload();
         } else {
-          alert("Signup successful! Please login.");
           navigate("/login");
         }
-      } else {
-        alert(data.message || "Something went wrong");
       }
 
     } catch (error) {
       console.log(error);
-      alert("Server error");
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <div className={styles.container}>
-
+      
       <div className={styles.card}>
-
-        {/* LEFT */}
+        
         <div className={styles.left}>
           <div className={styles.icon}>🛍️</div>
 
@@ -126,9 +121,8 @@ const AuthLayout = ({ isLogin }) => {
           </ul>
         </div>
 
-        {/* RIGHT */}
         <div className={styles.right}>
-
+          
           <h2>{isLogin ? "Login" : "Create Account"}</h2>
 
           <p className={styles.subText}>
@@ -138,95 +132,45 @@ const AuthLayout = ({ isLogin }) => {
           </p>
 
           <form className={styles.form} onSubmit={handleSubmit}>
-
+            
             {!isLogin && (
-              <input
-                name="username"
-                type="text"
-                placeholder="Username"
-                onChange={handleChange}
-                required
-              />
+              <input name="username" type="text" placeholder="Username" onChange={handleChange} />
             )}
 
-            <input
-              name="email"
-              type="email"
-              placeholder="Email Address"
-              onChange={handleChange}
-              required
-            />
-
-            <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              onChange={handleChange}
-              required
-            />
+            <input name="email" type="email" placeholder="Email Address" onChange={handleChange} />
+            <input name="password" type="password" placeholder="Password" onChange={handleChange} />
 
             {!isLogin && (
               <>
-                <input
-                  name="phone"
-                  type="text"
-                  placeholder="Phone Number"
-                  onChange={handleChange}
-                  required
-                />
+                <input name="phone" type="text" placeholder="Phone Number" onChange={handleChange} />
 
-                {/* ROLE SELECT */}
-                <select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                >
+                <select name="role" onChange={handleChange}>
                   <option value="user">User</option>
                   <option value="shopkeeper">Shopkeeper</option>
                 </select>
 
-                {/* SHOP SECTION */}
                 {formData.role === "shopkeeper" && (
-                  <div className={styles.shopSection}>
-                    <p className={styles.shopTitle}>🏪 Shop Details</p>
-
-                    <input
-                      name="shopName"
-                      type="text"
-                      placeholder="Shop Name"
-                      onChange={handleChange}
-                      required
-                    />
-
-                    <input
-                      name="shopAddress"
-                      type="text"
-                      placeholder="Shop Address"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+                  <>
+                    <input name="shopName" type="text" placeholder="Shop Name" onChange={handleChange} />
+                    <input name="shopAddress" type="text" placeholder="Shop Address" onChange={handleChange} />
+                  </>
                 )}
 
                 <div className={styles.checkbox}>
-                  <input type="checkbox" required />
+                  <input type="checkbox" />
                   <span>I agree to Terms & Privacy</span>
                 </div>
               </>
             )}
 
-            <button className={styles.signupBtn} disabled={loading}>
-              {loading
-                ? "Please wait..."
-                : isLogin
-                ? "Login"
-                : "Sign Up"}
+            <button className={styles.signupBtn}>
+              {isLogin ? "Login" : "Sign Up"}
             </button>
           </form>
 
           <p className={styles.loginText}>
             {isLogin ? "Don't have an account? " : "Already have an account? "}
-
+            
             <Link to={isLogin ? "/signup" : "/login"}>
               {isLogin ? "Signup" : "Login"}
             </Link>

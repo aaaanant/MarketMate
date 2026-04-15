@@ -1,0 +1,22 @@
+.buyBtn {
+  background: linear-gradient(135deg, #ff7a18, #ffb347);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  font-size: 16px;
+  font-weight: 600;
+ white-space: nowrap; 
+  transition: all 0.3s ease;
+}
+
+.buyBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.buyBtn:active {
+  transform: scale(0.95);
+}

@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 
 const signupUser = async (req, res) => {
   try {
-    const { username, email, phone, password } = req.body;
+    const { username, email, phone, password, role, shop } = req.body;
 
     if (!username || !email || !password) {
       return res.status(400).json({ message: "Please fill all required fields" });
@@ -20,19 +20,21 @@ const signupUser = async (req, res) => {
       username,
       email,
       phone,
-      password: hashedPassword
+      password: hashedPassword,
+      role: role || "user",
+      shop: role === "shopkeeper" ? shop : undefined
     });
 
     await newUser.save();
 
-    res.status(201).json({ message: "Signup successful" });
+    res.status(201).json({
+      message: "Signup successful",
+      role: newUser.role
+    });
 
   } catch (err) {
-    console.log("ERROR 👉", err);
-    res.status(500).json({
-      message: "Error",
-      error: err.message
-    });
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 

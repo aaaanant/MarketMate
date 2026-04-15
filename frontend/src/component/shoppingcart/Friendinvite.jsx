@@ -1,12 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../../styles/invitefriend.module.css";
 
 function Friendinvite() {
   const [email, setEmail] = useState("");
   const [friends, setFriends] = useState([]);
 
+  useEffect(() => {
+    const fetchFriends = async () => {
+      const cartId = localStorage.getItem("cartId");
+      if (!cartId) return;
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/cart/${cartId}`);
+        const data = await res.json();
+
+        if (data.sharedWith) {
+          setFriends(data.sharedWith);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchFriends();
+  }, []);
+
   const handleAdd = () => {
-    if (email.trim() === "") return;
+    if (!email) return;
 
     if (friends.includes(email)) {
       alert("Already added");
@@ -32,24 +52,19 @@ function Friendinvite() {
 
     try {
       for (let friendEmail of friends) {
-        const res = await fetch("http://localhost:5000/api/cart/invite", {
+        await fetch("http://localhost:5000/api/cart/invite", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             email: friendEmail,
-            cartId: cartId,
+            cartId,
           }),
         });
-
-        const data = await res.json();
-        console.log(data);
       }
 
-      alert("Invites sent successfully ✅");
-      setFriends([]);
-
+      alert("Invites saved ✅");
     } catch (err) {
       console.log(err);
       alert("Error sending invites");
@@ -58,12 +73,12 @@ function Friendinvite() {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.heading}>Invite Friends 🧑‍🤝‍🧑</h2>
+      <h2 className={styles.heading}>Invite Friends</h2>
 
       <div className={styles.inputBox}>
         <input
           type="email"
-          placeholder="Enter friend's email"
+          placeholder="Enter email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -71,17 +86,17 @@ function Friendinvite() {
       </div>
 
       <div className={styles.list}>
-        {friends.map((friend, index) => (
-          <div key={index} className={styles.listItem}>
-            <span>{friend}</span>
-            <button onClick={() => handleRemove(index)}>❌</button>
+        {friends.map((f, i) => (
+          <div key={i} className={styles.item}>
+            <span>{f}</span>
+            <button onClick={() => handleRemove(i)}>❌</button>
           </div>
         ))}
       </div>
 
       {friends.length > 0 && (
         <button className={styles.inviteBtn} onClick={handleInvite}>
-          Invite Friends
+          Save Invites
         </button>
       )}
     </div>

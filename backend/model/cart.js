@@ -1,20 +1,11 @@
 const mongoose = require("mongoose");
 
 const cartSchema = new mongoose.Schema({
-  owner: {
-    type: String,
-    required: true,
-  },
-  items: [
-    {
-      name: String,
-      price: Number,
-      qty: Number,
-    },
-  ],
+  owner: String,
+  items: [],
   sharedWith: {
     type: [String],
-    default: [], // 🔥 important
+    default: [],
   },
 });
 
