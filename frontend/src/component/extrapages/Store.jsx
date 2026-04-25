@@ -5,25 +5,28 @@ import Useraddress from "../address/Useraddress";
 
 function Store() {
   const [apiProducts, setApiProducts] = useState([]);
-  const [localProducts, setLocalProducts] = useState([]);
+  const [dbProducts, setDbProducts] = useState([]);
   const [search, setSearch] = useState("");
 
- useEffect(() => {
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch("https://dummyjson.com/products?limit=12");
-      const data = await res.json();
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const apiRes = await fetch("https://dummyjson.com/products?limit=12");
+        const apiData = await apiRes.json();
+        setApiProducts(apiData.products || []);
 
-      console.log("API DATA:", data); 
+        const dbRes = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/products/all`
+        );
+        const dbData = await dbRes.json();
+        setDbProducts(dbData || []);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
-      setApiProducts(data.products || []);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  fetchProducts();
-}, []);
+    fetchAll();
+  }, []);
 
   const getStoreName = (url) => {
     try {
@@ -38,7 +41,7 @@ function Store() {
   const getDistance = () =>
     (Math.random() * (3 - 0.5) + 0.5).toFixed(1) + " km";
 
-  const filteredLocal = localProducts.filter((item) =>
+  const filteredDb = dbProducts.filter((item) =>
     item.name?.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -61,18 +64,17 @@ function Store() {
         />
 
         <div className={styles.grid}>
-          {filteredLocal.map((item, index) => (
+          {filteredDb.map((item, index) => (
             <Storeproduct
-              key={`local-${index}`}
+              key={`db-${index}`}
               product={{
-                image: "https://via.placeholder.com/150",
+                image: item.image || "https://via.placeholder.com/150",
                 title: item.name,
                 price: item.price,
-                location: getStoreName(item.mapLink),
+                location: "Your Store",
                 rating: getRating(),
                 distance: getDistance(),
                 source: "Your Product",
-                onViewStore: () => window.open(item.mapLink, "_blank"),
               }}
             />
           ))}
@@ -88,11 +90,6 @@ function Store() {
                 rating: item.rating || getRating(),
                 distance: getDistance(),
                 source: "API Product",
-                onViewStore: () =>
-                  window.open(
-                    `https://www.google.com/maps/search/?api=1&query=${item.title}`,
-                    "_blank"
-                  ),
               }}
             />
           ))}

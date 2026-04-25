@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../model/product");
+const fetch = require("node-fetch");
 
 router.post("/add", async (req, res) => {
   try {
@@ -17,6 +18,18 @@ router.post("/add", async (req, res) => {
 
   } catch (err) {
     res.status(500).json({ message: "Error adding product" });
+  }
+});
+
+router.get("/dummy", async (req, res) => {
+  try {
+    const response = await fetch("https://dummyjson.com/products?limit=12");
+    const data = await response.json();
+
+    res.json(data.products);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Error fetching dummy products" });
   }
 });
 
