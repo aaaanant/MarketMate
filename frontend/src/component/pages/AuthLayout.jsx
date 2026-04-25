@@ -70,16 +70,17 @@ const AuthLayout = ({ isLogin, onSwitch }) => {
       console.log("Response:", data);
 
       if (res.ok) {
-        if (isLogin) {
-          localStorage.setItem("token", data.token);
+       if (isLogin) {
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("email", formData.email);
 
-          const decoded = jwtDecode(data.token);
-          console.log("Decoded:", decoded);
+  const decoded = jwtDecode(data.token);
+  console.log("Decoded:", decoded);
 
-          const userRole = decoded.role || decoded.user?.role;
+  const userRole = decoded.role || decoded.user?.role;
 
-          localStorage.setItem("role", userRole);
-          localStorage.setItem("user", JSON.stringify(decoded.user));
+  localStorage.setItem("role", userRole);
+  localStorage.setItem("user", JSON.stringify(decoded.user));
 
           if (userRole === "shopkeeper") {
             navigate("/shopdashboard"); 
