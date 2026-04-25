@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "../../styles/auth.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-
+import { apiRequest } from "../../utils/api";
 const AuthLayout = ({ isLogin, onSwitch }) => {
 
   const navigate = useNavigate();
@@ -25,79 +25,66 @@ const AuthLayout = ({ isLogin, onSwitch }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const BASE_URL = import.meta.env.VITE_API_URL;
+  try {
+    let endpoint = "";
+    let payload = {};
 
-      const url = isLogin
-        ? `${BASE_URL}/api/auth/login`
-        : `${BASE_URL}/api/auth/signup`;
+    if (isLogin) {
+      endpoint = "/api/auth/login";
+      payload = {
+        email: formData.email,
+        password: formData.password,
+      };
+    } else {
+      endpoint = "/api/auth/signup";
+      payload = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+        role: formData.role,
+      };
 
-      let payload = {};
-
-      if (isLogin) {
-        payload = {
-          email: formData.email,
-          password: formData.password
+      if (formData.role === "shopkeeper") {
+        payload.shop = {
+          shopName: formData.shopName,
+          mapLink: formData.mapLink,
         };
-      } else {
-        payload = {
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-          phone: formData.phone,
-          role: formData.role
-        };
-
-        if (formData.role === "shopkeeper") {
-          payload.shop = {
-            shopName: formData.shopName,
-            mapLink: formData.mapLink
-          };
-        }
       }
-
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      console.log("Response:", data);
-
-      if (res.ok) {
-       if (isLogin) {
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("email", formData.email);
-
-  const decoded = jwtDecode(data.token);
-  console.log("Decoded:", decoded);
-
-  const userRole = decoded.role || decoded.user?.role;
-
-  localStorage.setItem("role", userRole);
-  localStorage.setItem("user", JSON.stringify(decoded.user));
-
-          if (userRole === "shopkeeper") {
-            navigate("/shopdashboard"); 
-          } else {
-            navigate("/");
-          }
-
-          window.location.reload();
-        } else {
-          navigate("/login");
-        }
-      }
-
-    } catch (error) {
-      console.log(error);
     }
-  };
+
+    const data = await apiRequest(endpoint, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+
+    if (isLogin) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("email", formData.email);
+
+      const decoded = jwtDecode(data.token);
+      const userRole = decoded.role || decoded.user?.role;
+
+      localStorage.setItem("role", userRole);
+      localStorage.setItem("user", JSON.stringify(decoded.user));
+
+      if (userRole === "shopkeeper") {
+        navigate("/shopdashboard");
+      } else {
+        navigate("/");
+      }
+
+      window.location.reload();
+    } else {
+      navigate("/login");
+    }
+
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   return (
     <div className={styles.container}>
