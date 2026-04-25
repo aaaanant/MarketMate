@@ -12,6 +12,7 @@ function Storeproduct({ product }) {
     rating,
     distance,
     onViewStore,
+    source,
   } = product;
 
   return (
@@ -21,6 +22,12 @@ function Storeproduct({ product }) {
       <h3 className={styles.title}>{title}</h3>
 
       <p className={styles.price}>₹ {price}</p>
+
+      {source && (
+        <p style={{ color: "green", fontSize: "12px" }}>
+          {source}
+        </p>
+      )}
 
       <p className={styles.location}>
         Shop Name: {location}

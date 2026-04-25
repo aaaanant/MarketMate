@@ -8,14 +8,22 @@ function Store() {
   const [localProducts, setLocalProducts] = useState([]);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    fetch("https://dummyjson.com/products?limit=12")
-      .then((res) => res.json())
-      .then((data) => setApiProducts(data.products));
+ useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("https://dummyjson.com/products?limit=12");
+      const data = await res.json();
 
-    const saved = JSON.parse(localStorage.getItem("products")) || [];
-    setLocalProducts(saved);
-  }, []);
+      console.log("API DATA:", data); 
+
+      setApiProducts(data.products || []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  fetchProducts();
+}, []);
 
   const getStoreName = (url) => {
     try {
@@ -31,11 +39,11 @@ function Store() {
     (Math.random() * (3 - 0.5) + 0.5).toFixed(1) + " km";
 
   const filteredLocal = localProducts.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
+    item.name?.toLowerCase().includes(search.toLowerCase())
   );
 
   const filteredApi = apiProducts.filter((item) =>
-    item.title.toLowerCase().includes(search.toLowerCase())
+    item.title?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -63,6 +71,7 @@ function Store() {
                 location: getStoreName(item.mapLink),
                 rating: getRating(),
                 distance: getDistance(),
+                source: "Your Product",
                 onViewStore: () => window.open(item.mapLink, "_blank"),
               }}
             />
@@ -78,6 +87,7 @@ function Store() {
                 location: item.brand || "Store",
                 rating: item.rating || getRating(),
                 distance: getDistance(),
+                source: "API Product",
                 onViewStore: () =>
                   window.open(
                     `https://www.google.com/maps/search/?api=1&query=${item.title}`,

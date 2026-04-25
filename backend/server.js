@@ -7,12 +7,13 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
+const productRoutes = require("./router/productRoutes");
 const authRoutes = require("./router/authRoutes");
 const cartRoutes = require("./router/cartRoutes");
-
 app.use("/api/auth", authRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/products", productRoutes);
+
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("DB Connected"))
