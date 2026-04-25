@@ -7,23 +7,24 @@ function Shopdashboard() {
   const [product, setProduct] = useState({
     name: "",
     price: "",
-    mapLink: ""
+    mapLink: "",
+    image: ""
   });
 
   const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState("");
+  const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("products")) || [];
     setProducts(saved);
+
+    const status = localStorage.getItem("storeStatus");
+    setIsOnline(status !== "offline");
   }, []);
 
   if (role !== "shopkeeper") {
-    return (
-      <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <h2>Access Denied ❌</h2>
-        <p>You are not authorized to view this page</p>
-      </div>
-    );
+    return <div className={styles.denied}>Access Denied</div>;
   }
 
   const handleChange = (e) => {
@@ -33,11 +34,25 @@ function Shopdashboard() {
     });
   };
 
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProduct((prev) => ({
+        ...prev,
+        image: reader.result
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!product.name || !product.price || !product.mapLink) {
-      alert("Please fill all fields");
+    if (!product.name || !product.price) {
+      alert("Fill all fields");
       return;
     }
 
@@ -49,7 +64,8 @@ function Shopdashboard() {
     setProduct({
       name: "",
       price: "",
-      mapLink: ""
+      mapLink: "",
+      image: ""
     });
   };
 
@@ -59,67 +75,108 @@ function Shopdashboard() {
     localStorage.setItem("products", JSON.stringify(updated));
   };
 
+  const toggleStore = () => {
+    const newStatus = !isOnline;
+    setIsOnline(newStatus);
+    localStorage.setItem("storeStatus", newStatus ? "online" : "offline");
+  };
+
+  const filteredProducts = products.filter((p) =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className={styles.container}>
-      <h1 className={styles.heading}>🏪 Shop Dashboard</h1>
+      <div className={styles.header}>
+        <div>
+          <h1>Shop Dashboard</h1>
+          <p>Manage your store and inventory</p>
+        </div>
 
-      {/* FORM */}
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Product Name"
-          value={product.name}
-          onChange={handleChange}
-        />
+        <button
+          className={isOnline ? styles.online : styles.offline}
+          onClick={toggleStore}
+        >
+          {isOnline ? "Store Online" : "Store Offline"}
+        </button>
+      </div>
 
-        <input
-          type="number"
-          name="price"
-          placeholder="Price"
-          value={product.price}
-          onChange={handleChange}
-        />
+      <div className={styles.layout}>
+        <div className={styles.left}>
+          <h2>Add Product</h2>
 
-        <input
-          type="text"
-          name="mapLink"
-          placeholder="Google Map Link"
-          value={product.mapLink}
-          onChange={handleChange}
-        />
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Product Name"
+              value={product.name}
+              onChange={handleChange}
+            />
 
-        <button type="submit">Post Product</button>
-      </form>
+            <input
+              type="text"
+              name="price"
+              placeholder="Price"
+              value={product.price}
+              onChange={handleChange}
+            />
 
-      {/* PRODUCTS */}
-      <div className={styles.grid}>
-        {products.length === 0 ? (
-          <p className={styles.empty}>No products added yet</p>
-        ) : (
-          products.map((item, index) => (
-            <div key={index} className={styles.card}>
-              <h3>{item.name}</h3>
-              <p className={styles.price}>₹ {item.price}</p>
+            <input type="file" onChange={handleImage} />
 
-              <a
-                href={item.mapLink}
-                target="_blank"
-                rel="noreferrer"
-                className={styles.link}
-              >
-                View Route 📍
-              </a>
+            <button type="submit">Post Product</button>
+          </form>
+        </div>
 
-              <button
-                className={styles.deleteBtn}
-                onClick={() => handleDelete(index)}
-              >
-                Delete
-              </button>
+        <div className={styles.right}>
+          <div className={styles.inventoryHeader}>
+            <h2>Your Inventory ({products.length})</h2>
+
+            <input
+              type="text"
+              placeholder="Search products..."
+              className={styles.search}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          {filteredProducts.length === 0 ? (
+            <div className={styles.empty}>Inventory Empty</div>
+          ) : (
+            <div className={styles.grid}>
+              {filteredProducts.map((item, index) => (
+                <div key={index} className={styles.card}>
+                  <img src={item.image} alt="" />
+                  <h3>{item.name}</h3>
+                  <p>₹ {item.price}</p>
+
+                  <button onClick={() => handleDelete(index)}>
+                    Delete
+                  </button>
+                </div>
+              ))}
             </div>
-          ))
-        )}
+          )}
+        </div>
+      </div>
+
+      <div className={styles.helpWrapper}>
+        <div className={styles.helpBox}>
+          <h3>Admin Help</h3>
+          <p>
+            If you face any issues while adding products or managing your store,
+            contact support.
+          </p>
+          <p>Email: &nbsp;
+          <a
+            href="mailto:support@marketmate.com"
+            className={styles.email}
+          >
+            support@marketmate.com
+          </a>
+          </p>
+        </div>
       </div>
     </div>
   );

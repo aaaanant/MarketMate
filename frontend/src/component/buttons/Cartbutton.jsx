@@ -4,10 +4,14 @@ import styles from "../../styles/button/cartbutton.module.css";
 function Cartbutton({ product }) {
 
   const handleAddToCart = () => {
-
     const token = localStorage.getItem("token");
-    const cartKey = token ? `cart_${token}` : "cart_guest";
 
+    if (!token) {
+      alert("Please login to add items to cart");
+      return;
+    }
+
+    const cartKey = `cart_${token}`;
     let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
     const exists = cart.find((item) => item.id === product.id);

@@ -5,7 +5,6 @@
   min-height: 100vh;
 }
 
-/* Heading */
 .heading {
   font-size: 32px;
   margin-bottom: 10px;
@@ -17,18 +16,15 @@
   margin-bottom: 40px;
 }
 
-/* Section */
 .section {
   margin-top: 40px;
 }
 
-/* Section Title */
 .sectionTitle {
   font-size: 24px;
   margin-bottom: 20px;
 }
 
-/* 🔥 IMPORTANT: product/grid layout fix */
 .productsGrid {
   display: flex;
   flex-wrap: wrap;

@@ -27,7 +27,7 @@ function Trendingproduct() {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.heading}>🔥 Trending Products</h2>
+      <h2 className={styles.heading}>Trending Products</h2>
 
       {products.length === 0 ? (
         <p>Loading products...</p>

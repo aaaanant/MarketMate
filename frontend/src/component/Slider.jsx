@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/slider.module.css";
 
-// local images
 import slide1 from "../assets/slider/slide1.jpg";
 import slide2 from "../assets/slider/slide2.jpg";
 
@@ -10,7 +9,6 @@ const slides = [slide1, slide2];
 function Slider() {
   const [current, setCurrent] = useState(0);
 
-  // auto slide every 3 sec
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) =>

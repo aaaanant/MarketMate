@@ -64,7 +64,7 @@ function Friendinvite() {
         });
       }
 
-      alert("Invites saved ✅");
+      alert("Invites saved");
     } catch (err) {
       console.log(err);
       alert("Error sending invites");

@@ -14,7 +14,7 @@ const AuthLayout = ({ isLogin, onSwitch }) => {
     phone: "",
     role: "user",
     shopName: "",
-    shopAddress: ""
+    mapLink: ""
   });
 
   const handleChange = (e) => {
@@ -53,7 +53,7 @@ const AuthLayout = ({ isLogin, onSwitch }) => {
         if (formData.role === "shopkeeper") {
           payload.shop = {
             shopName: formData.shopName,
-            shopAddress: formData.shopAddress
+            mapLink: formData.mapLink
           };
         }
       }
@@ -79,12 +79,13 @@ const AuthLayout = ({ isLogin, onSwitch }) => {
           const userRole = decoded.role || decoded.user?.role;
 
           localStorage.setItem("role", userRole);
+          localStorage.setItem("user", JSON.stringify(decoded.user));
 
-         if (userRole === "shopkeeper") {
-  navigate("/shopdashboard"); 
-} else {
-  navigate("/");
-}
+          if (userRole === "shopkeeper") {
+            navigate("/shopdashboard"); 
+          } else {
+            navigate("/");
+          }
 
           window.location.reload();
         } else {
@@ -152,7 +153,7 @@ const AuthLayout = ({ isLogin, onSwitch }) => {
                 {formData.role === "shopkeeper" && (
                   <>
                     <input name="shopName" type="text" placeholder="Shop Name" onChange={handleChange} />
-                    <input name="shopAddress" type="text" placeholder="Shop Address" onChange={handleChange} />
+                    <input name="mapLink" type="text" placeholder="Google Map Link" onChange={handleChange} />
                   </>
                 )}
 

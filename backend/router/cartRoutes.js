@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Cart = require("../model/cart");
 
-// ✅ CREATE CART (IMPORTANT)
 router.post("/create", async (req, res) => {
   try {
     const { email } = req.body;
@@ -23,7 +22,6 @@ router.post("/create", async (req, res) => {
 });
 
 
-// ✅ INVITE FRIEND
 router.post("/invite", async (req, res) => {
   try {
     const { email, cartId } = req.body;
@@ -50,7 +48,6 @@ router.post("/invite", async (req, res) => {
 });
 
 
-// ✅ GET CART
 router.get("/:cartId", async (req, res) => {
   try {
     const cart = await Cart.findById(req.params.cartId);

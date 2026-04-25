@@ -13,7 +13,7 @@ function Useraddress() {
         const { latitude, longitude } = position.coords;
 
         try {
-          // 🔥 FIRST API
+
           const res = await fetch(
             `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=en`
           );
@@ -29,7 +29,6 @@ function Useraddress() {
 
           let pincode = address.postcode;
 
-          // 🔥 SECOND TRY (if no pincode)
           if (!pincode) {
             const res2 = await fetch(
               `https://nominatim.openstreetmap.org/search?format=json&q=${city}&limit=1`
@@ -71,7 +70,7 @@ function Useraddress() {
 
   return (
     <div className={styles.container}>
-      📍 {location.city} - {location.pincode}
+    🏠 {location.city} - {location.pincode}
     </div>
   );
 }

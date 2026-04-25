@@ -8,30 +8,35 @@ import CartSummary from "../shoppingcart/Cartsummary";
 function Cart() {
   const [total, setTotal] = useState(0);
 
-  // 🔥 CREATE CART (IMPORTANT)
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please login to access your cart");
+      return;
+    }
+
     const createCart = async () => {
       const email = localStorage.getItem("email");
-
       if (!email) return;
 
-      // agar already cart hai toh skip
-      if (localStorage.getItem("cartId")) return;
+      let cartId = localStorage.getItem("cartId");
+      if (cartId) return;
 
       try {
-        const res = await fetch("http://localhost:5000/api/cart/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/cart/create`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          }
+        );
 
         const data = await res.json();
-
         localStorage.setItem("cartId", data._id);
-        console.log("Cart Created:", data);
-
       } catch (err) {
         console.log("Error creating cart:", err);
       }
@@ -42,9 +47,7 @@ function Cart() {
 
   return (
     <div className={styles.container}>
-
       <div className={styles.top}>
-        
         <div className={styles.invite}>
           <Friendinvite />
         </div>
@@ -53,13 +56,11 @@ function Cart() {
           <CartSummary total={total} />
           <button className={styles.orderBtn}>PLACE ORDER</button>
         </div>
-
       </div>
 
       <div className={styles.products}>
         <Cartproduct setTotal={setTotal} />
       </div>
-
     </div>
   );
 }

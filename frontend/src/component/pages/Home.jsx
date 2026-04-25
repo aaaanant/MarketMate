@@ -12,18 +12,16 @@ function Home() {
     <Slider/>
     <div className={styles.container}>
 
-      <h1 className={styles.heading}>Welcome to MarketMate 🛒</h1>
+      <h1 className={styles.heading}>Welcome to MarketMate</h1>
 
       <p className={styles.subText}>
         Find nearby stores, compare prices, and shop smarter!
       </p>
 
-      {/* ✅ Nearby Stores */}
       <div className={styles.section}>
         <NearbyStore />
       </div>
 
-      {/* ✅ Trending Products */}
       <div className={styles.section}>
         <Trendingproduct />
       </div>

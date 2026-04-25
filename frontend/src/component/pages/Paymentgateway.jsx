@@ -4,7 +4,6 @@ import styles from "../../styles/button/buynow.module.css";
 function Buynow() {
 
   const handleBuyNow = () => {
-    // Razorpay payment link
     window.open("https://razorpay.me/@anantbhatt593", "_blank");
   };
 

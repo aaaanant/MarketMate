@@ -2,7 +2,6 @@ import React from "react";
 import styles from "../../styles/cartsummary.module.css";
 
 function CartSummary({ total }) {
-  // 🔥 PROFESSIONAL FORMAT
   const formatted = new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
