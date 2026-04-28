@@ -3,8 +3,8 @@ import styles from "../../styles/auth.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { apiRequest } from "../../utils/api";
-const AuthLayout = ({ isLogin, onSwitch }) => {
 
+const AuthLayout = ({ isLogin }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -25,70 +25,71 @@ const AuthLayout = ({ isLogin, onSwitch }) => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    let endpoint = "";
-    let payload = {};
+    try {
+      let endpoint = "";
+      let payload = {};
 
-    if (isLogin) {
-      endpoint = "/api/auth/login";
-      payload = {
-        email: formData.email,
-        password: formData.password,
-      };
-    } else {
-      endpoint = "/api/auth/signup";
-      payload = {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-        phone: formData.phone,
-        role: formData.role,
-      };
-
-      if (formData.role === "shopkeeper") {
-        payload.shop = {
-          shopName: formData.shopName,
-          mapLink: formData.mapLink,
+      if (isLogin) {
+        endpoint = "/api/auth/login";
+        payload = {
+          email: formData.email,
+          password: formData.password,
         };
-      }
-    }
-
-    const data = await apiRequest(endpoint, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-
-    if (isLogin) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("email", formData.email);
-
-      const decoded = jwtDecode(data.token);
-      const userRole = decoded.role || decoded.user?.role;
-
-      localStorage.setItem("role", userRole);
-      localStorage.setItem("user", JSON.stringify(decoded.user));
-
-      if (userRole === "shopkeeper") {
-        navigate("/shopdashboard");
       } else {
-        navigate("/");
+        localStorage.removeItem("token");
+
+        endpoint = "/api/auth/signup";
+        payload = {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone,
+          role: formData.role,
+        };
+
+        if (formData.role === "shopkeeper") {
+          payload.shop = {
+            shopName: formData.shopName,
+            mapLink: formData.mapLink,
+          };
+        }
       }
 
-      window.location.reload();
-    } else {
-      navigate("/login");
-    }
+      const data = await apiRequest(endpoint, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
 
-  } catch (error) {
-    console.log(error);
-  }
-};
+      if (isLogin) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("email", formData.email);
+
+        const decoded = jwtDecode(data.token);
+        const userRole = decoded.role;
+
+        localStorage.setItem("role", userRole);
+
+        if (userRole === "shopkeeper") {
+          navigate("/shopdashboard");
+        } else {
+          navigate("/");
+        }
+
+        window.location.reload();
+      } else {
+        alert("Signup successful");
+        navigate("/login");
+      }
+
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   return (
     <div className={styles.container}>
-      
       <div className={styles.card}>
         
         <div className={styles.left}>
@@ -111,14 +112,7 @@ const AuthLayout = ({ isLogin, onSwitch }) => {
         </div>
 
         <div className={styles.right}>
-          
           <h2>{isLogin ? "Login" : "Create Account"}</h2>
-
-          <p className={styles.subText}>
-            {isLogin
-              ? "Welcome back! Please login to continue."
-              : "Join MarketMate today and start shopping."}
-          </p>
 
           <form className={styles.form} onSubmit={handleSubmit}>
             
@@ -144,11 +138,6 @@ const AuthLayout = ({ isLogin, onSwitch }) => {
                     <input name="mapLink" type="text" placeholder="Google Map Link" onChange={handleChange} />
                   </>
                 )}
-
-                <div className={styles.checkbox}>
-                  <input type="checkbox" />
-                  <span>I agree to Terms & Privacy</span>
-                </div>
               </>
             )}
 

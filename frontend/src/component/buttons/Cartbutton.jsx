@@ -2,51 +2,28 @@ import React from "react";
 import styles from "../../styles/button/cartbutton.module.css";
 
 function Cartbutton({ product, text = "Add to Cart" }) {
+  const handleAddToCart = () => {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  const handleAddToCart = async () => {
-    const token = localStorage.getItem("token");
-    const cartId = localStorage.getItem("cartId");
+    const productId = String(product._id || product.id);
 
-    if (!token) {
-      alert("Please login to add items to cart");
-      return;
-    }
+    const existing = cart.find((item) => item.id === productId);
 
-    const cartKey = "cart";
-    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
-
-    const exists = cart.find((item) => item.id === product.id);
-
-    if (exists) {
-      cart = cart.map((item) =>
-        item.id === product.id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
+    if (existing) {
+      existing.quantity += 1;
     } else {
-      cart.push({ ...product, quantity: 1 });
+      cart.push({
+        id: productId,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+        quantity: 1,
+      });
     }
 
-    localStorage.setItem(cartKey, JSON.stringify(cart));
-
-    if (cartId) {
-      try {
-        await fetch(`${import.meta.env.VITE_API_URL}/api/cart/add`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            cartId,
-            product,
-          }),
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    window.location.reload();
+    localStorage.setItem("cart", JSON.stringify(cart));
+    window.dispatchEvent(new Event("cartUpdated"));
+      alert("Added to cart");
   };
 
   return (

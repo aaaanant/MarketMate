@@ -3,5 +3,8 @@ body {
     padding: 0;
      background-color: #eae7ff;
      /* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
+     
      font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+      /* background: linear-gradient(135deg,#775cff, #e8e2ff,  #fcfbff); */
 }

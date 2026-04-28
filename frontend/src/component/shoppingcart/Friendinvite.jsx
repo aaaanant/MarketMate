@@ -5,27 +5,14 @@ function Friendinvite() {
   const [email, setEmail] = useState("");
   const [friends, setFriends] = useState([]);
 
+  const userEmail = localStorage.getItem("email");
+
+  const storageKey = `friends_${userEmail}`;
+
   useEffect(() => {
-    const fetchFriends = async () => {
-      const cartId = localStorage.getItem("cartId");
-      if (!cartId) return;
-
-      try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/cart/${cartId}`
-        );
-        const data = await res.json();
-
-        if (data.sharedWith) {
-          setFriends(data.sharedWith);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchFriends();
-  }, []);
+    const data = JSON.parse(localStorage.getItem(storageKey)) || [];
+    setFriends(data);
+  }, [storageKey]);
 
   const handleAdd = () => {
     if (!email) return;
@@ -35,40 +22,10 @@ function Friendinvite() {
       return;
     }
 
-    setFriends([...friends, email]);
+    const updated = [...friends, email];
+    setFriends(updated);
+    localStorage.setItem(storageKey, JSON.stringify(updated));
     setEmail("");
-  };
-
-  const handleInvite = async () => {
-    const cartId = localStorage.getItem("cartId");
-
-    if (!cartId) {
-      alert("Cart not found");
-      return;
-    }
-
-    try {
-      for (let friendEmail of friends) {
-        await fetch(
-          `${import.meta.env.VITE_API_URL}/api/cart/invite`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: friendEmail,
-              cartId,
-            }),
-          }
-        );
-      }
-
-      alert("Invites saved");
-    } catch (err) {
-      console.log(err);
-      alert("Error sending invites");
-    }
   };
 
   return (
@@ -107,12 +64,6 @@ function Friendinvite() {
 
         <span className={styles.manage}>Manage</span>
       </div>
-
-      {friends.length > 0 && (
-        <button className={styles.inviteBtn} onClick={handleInvite}>
-          Save Invites
-        </button>
-      )}
     </div>
   );
 }

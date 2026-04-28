@@ -3,6 +3,7 @@ import Useraddress from "../address/Useraddress";
 import Slider from "../Slider";
 import NearbyStore from "./Nearbystore";
 import Trendingproduct from "./Trendingproduct";
+import SuggestionProduct from "../extrapages/SuggestionProduct";
 import styles from "../../styles/home.module.css";
 
 function Home() {
@@ -24,6 +25,9 @@ function Home() {
 
       <div className={styles.section}>
         <Trendingproduct />
+      </div>
+      <div className={styles.section}>
+        <SuggestionProduct />
       </div>
 
     </div>

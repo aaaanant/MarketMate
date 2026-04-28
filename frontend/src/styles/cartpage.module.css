@@ -1,6 +1,6 @@
 .container {
   padding: 30px;
-  background: #f1f3f6;
+  background: transparent;
   min-height: 100vh;
 }
 
@@ -43,5 +43,6 @@
 
   .products {
     max-height: unset;
+    width: 578px;
   }
 }

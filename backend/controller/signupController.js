@@ -25,7 +25,9 @@ const signupUser = async (req, res) => {
       shop: role === "shopkeeper" ? shop : undefined
     });
 
+    console.log("Saving user...");
     await newUser.save();
+    console.log("Saved user:", newUser.email);
 
     res.status(201).json({
       message: "Signup successful",
@@ -33,8 +35,8 @@ const signupUser = async (req, res) => {
     });
 
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Server error" });
+    console.log("SIGNUP ERROR:", err);
+    res.status(500).json({ message: err.message });
   }
 };
 

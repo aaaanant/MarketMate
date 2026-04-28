@@ -14,7 +14,6 @@ router.post("/create", async (req, res) => {
 
     await cart.save();
     res.json(cart);
-
   } catch (err) {
     res.status(500).json({ message: "Error creating cart" });
   }
@@ -23,26 +22,47 @@ router.post("/create", async (req, res) => {
 router.get("/:cartId", async (req, res) => {
   try {
     const cart = await Cart.findById(req.params.cartId);
-
-    if (!cart) {
-      return res.json({ message: "Cart not found" });
-    }
-
     res.json(cart);
-
   } catch (err) {
     res.status(500).json({ message: "Error" });
   }
 });
+router.post("/add", async (req, res) => {
+  try {
+    const { cartId, product } = req.body;
 
+    const cart = await Cart.findById(cartId);
+    if (!cart) return res.json({ message: "Cart not found" });
+
+    const existing = cart.items.find((i) => i.id == product.id);
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.items.push({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+        quantity: 1,
+      });
+    }
+
+    await cart.save();
+    res.json(cart);
+  } catch (err) {
+    res.status(500).json({ message: "Error adding item" });
+  }
+});
 router.put("/update", async (req, res) => {
   try {
     const { cartId, productId, quantity } = req.body;
 
     const cart = await Cart.findById(cartId);
-    if (!cart) return res.json({ message: "Cart not found" });
 
-    const item = cart.items.find(i => i.productId === productId);
+    const item = cart.items.find(
+      (i) => String(i.id) === String(productId)
+    );
 
     if (item) {
       item.quantity = quantity;
@@ -50,7 +70,6 @@ router.put("/update", async (req, res) => {
 
     await cart.save();
     res.json(cart);
-
   } catch (err) {
     res.status(500).json({ message: "Error updating cart" });
   }
@@ -61,35 +80,15 @@ router.delete("/remove", async (req, res) => {
     const { cartId, productId } = req.body;
 
     const cart = await Cart.findById(cartId);
-    if (!cart) return res.json({ message: "Cart not found" });
 
-    cart.items = cart.items.filter(i => i.productId !== productId);
+    cart.items = cart.items.filter(
+      (i) => String(i.id) !== String(productId)
+    );
 
     await cart.save();
     res.json(cart);
-
   } catch (err) {
     res.status(500).json({ message: "Error removing item" });
-  }
-});
-
-router.post("/invite", async (req, res) => {
-  try {
-    const { email, cartId } = req.body;
-
-    const cart = await Cart.findById(cartId);
-    if (!cart) return res.json({ message: "Cart not found" });
-
-    if (!cart.sharedWith.includes(email)) {
-      cart.sharedWith.push(email);
-    }
-
-    await cart.save();
-
-    res.json({ message: "User added to cart", cart });
-
-  } catch (err) {
-    res.status(500).json({ message: "Error inviting user" });
   }
 });
 
@@ -98,43 +97,34 @@ router.get("/user/:email", async (req, res) => {
     const { email } = req.params;
 
     const cart = await Cart.findOne({
-      $or: [
-        { owner: email },
-        { sharedWith: email }
-      ]
+      $or: [{ owner: email }, { sharedWith: email }],
     });
 
-    if (!cart) {
-      return res.json(null);
-    }
-
-    res.json(cart);
-
+    res.json(cart || null);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching user cart" });
+    res.status(500).json({ message: "Error fetching cart" });
   }
 });
-
-router.post("/add", async (req, res) => {
+router.post("/invite", async (req, res) => {
   try {
-    const { cartId, product } = req.body;
+    const { cartId, email } = req.body;
 
     const cart = await Cart.findById(cartId);
-    if (!cart) return res.json({ message: "Cart not found" });
 
-    const existing = cart.items.find((i) => i.id === product.id);
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
 
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      cart.items.push({ ...product, quantity: 1 });
+    if (!cart.sharedWith.includes(email)) {
+      cart.sharedWith.push(email);
     }
 
     await cart.save();
 
     res.json(cart);
   } catch (err) {
-    res.status(500).json({ message: "Error adding item" });
+    console.log(err);
+    res.status(500).json({ message: "Error inviting user" });
   }
 });
 
