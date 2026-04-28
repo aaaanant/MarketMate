@@ -1,34 +1,32 @@
 import React from "react";
 import styles from "../../styles/button/cartbutton.module.css";
 
-function Cartbutton({ product, text = "Add to Cart" }) {
+function Cartbutton({ product, text = "Add" }) {
+  const handleAddToCart = async () => {
+    const cartId = localStorage.getItem("cartId");
 
-  const handleAddToCart = () => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("Please login to add items to cart");
+    if (!cartId) {
+      alert("Cart not found");
       return;
     }
 
-    const cartKey = "cart";
-    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/cart/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cartId,
+          product,
+        }),
+      });
 
-    const exists = cart.find((item) => item.id === product.id);
+      window.location.reload();
 
-    if (exists) {
-      cart = cart.map((item) =>
-        item.id === product.id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
-    } else {
-      cart.push({ ...product, quantity: 1 });
+    } catch (err) {
+      console.log(err);
     }
-
-    localStorage.setItem(cartKey, JSON.stringify(cart));
-
-    window.location.reload();
   };
 
   return (

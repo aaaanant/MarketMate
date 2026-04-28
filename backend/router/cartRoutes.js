@@ -115,4 +115,27 @@ router.get("/user/:email", async (req, res) => {
   }
 });
 
+router.post("/add", async (req, res) => {
+  try {
+    const { cartId, product } = req.body;
+
+    const cart = await Cart.findById(cartId);
+    if (!cart) return res.json({ message: "Cart not found" });
+
+    const existing = cart.items.find((i) => i.id === product.id);
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.items.push({ ...product, quantity: 1 });
+    }
+
+    await cart.save();
+
+    res.json(cart);
+  } catch (err) {
+    res.status(500).json({ message: "Error adding item" });
+  }
+});
+
 module.exports = router;
