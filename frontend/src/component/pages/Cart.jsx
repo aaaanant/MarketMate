@@ -23,6 +23,7 @@ function Cart() {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/cart/user/${email}`
       );
+
       const data = await res.json();
 
       if (data && data._id) {
