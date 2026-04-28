@@ -103,3 +103,30 @@
   color: #6c4eff;
   cursor: pointer;
 }
+
+.inviteBtn {
+  margin-top: 15px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #6c4eff, #7b61ff);
+  color: white;
+
+  width: auto;         
+  display: inline-block;
+
+  transition: 0.2s;
+}
+
+.inviteBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(108, 78, 255, 0.25);
+}
+
+.inviteBtn:active {
+  transform: scale(0.97);
+}
