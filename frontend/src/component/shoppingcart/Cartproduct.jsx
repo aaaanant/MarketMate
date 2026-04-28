@@ -4,10 +4,29 @@ import styles from "../../styles/cartproduct.module.css";
 function Cartproduct({ setTotal }) {
   const [cart, setCart] = useState([]);
 
+  const fetchCartItems = async () => {
+    const cartId = localStorage.getItem("cartId");
+    if (!cartId) return;
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/cart/${cartId}`
+      );
+
+      const data = await res.json();
+
+      if (data.items) {
+        setCart(data.items);
+        calculateTotal(data.items);
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(data);
-    calculateTotal(data);
+    fetchCartItems();
   }, []);
 
   const calculateTotal = (items) => {
@@ -18,30 +37,41 @@ function Cartproduct({ setTotal }) {
     setTotal(total);
   };
 
-  const updateQuantity = (id, type) => {
-    let updatedCart = [];
+  const updateQuantity = async (id, type) => {
+    const cartId = localStorage.getItem("cartId");
 
-    if (type === "inc") {
-      updatedCart = cart.map((item) =>
-        item.id === id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
-    } else if (type === "dec") {
-      updatedCart = cart
-        .map((item) => {
-          if (item.id === id) {
-            if (item.quantity === 1) return null;
-            return { ...item, quantity: item.quantity - 1 };
-          }
-          return item;
-        })
-        .filter(Boolean);
+    const item = cart.find((i) => i.id === id);
+    if (!item) return;
+
+    let newQty = item.quantity;
+
+    if (type === "inc") newQty++;
+    if (type === "dec") newQty--;
+
+    try {
+      if (newQty <= 0) {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/cart/remove`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cartId, productId: id }),
+        });
+      } else {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/cart/update`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cartId,
+            productId: id,
+            quantity: newQty,
+          }),
+        });
+      }
+
+      fetchCartItems();
+
+    } catch (err) {
+      console.log(err);
     }
-
-    setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    calculateTotal(updatedCart);
   };
 
   if (cart.length === 0) {
@@ -52,7 +82,7 @@ function Cartproduct({ setTotal }) {
     <div className={styles.wrapper}>
       {cart.map((item) => (
         <div key={item.id} className={styles.card}>
-          <img src={item.image} alt={item.title} className={styles.image} />
+          <img src={item.image} className={styles.image} />
 
           <div className={styles.details}>
             <h3>{item.title}</h3>
