@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "../../styles/button/cartbutton.module.css";
 
-function Cartbutton({ product }) {
+function Cartbutton({ product, text = "Add to Cart" }) {
 
   const handleAddToCart = () => {
     const token = localStorage.getItem("token");
@@ -11,7 +11,7 @@ function Cartbutton({ product }) {
       return;
     }
 
-    const cartKey = `cart_${token}`;
+    const cartKey = "cart";
     let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
     const exists = cart.find((item) => item.id === product.id);
@@ -28,12 +28,12 @@ function Cartbutton({ product }) {
 
     localStorage.setItem(cartKey, JSON.stringify(cart));
 
-    alert("Added to cart ✅");
+    window.location.reload();
   };
 
   return (
     <button className={styles.cartBtn} onClick={handleAddToCart}>
-      Add to Cart
+      {text}
     </button>
   );
 }

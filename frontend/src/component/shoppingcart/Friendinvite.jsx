@@ -11,7 +11,9 @@ function Friendinvite() {
       if (!cartId) return;
 
       try {
-        const res = await fetch(`http://localhost:5000/api/cart/${cartId}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/cart/${cartId}`
+        );
         const data = await res.json();
 
         if (data.sharedWith) {
@@ -37,11 +39,6 @@ function Friendinvite() {
     setEmail("");
   };
 
-  const handleRemove = (index) => {
-    const updated = friends.filter((_, i) => i !== index);
-    setFriends(updated);
-  };
-
   const handleInvite = async () => {
     const cartId = localStorage.getItem("cartId");
 
@@ -52,16 +49,19 @@ function Friendinvite() {
 
     try {
       for (let friendEmail of friends) {
-        await fetch("http://localhost:5000/api/cart/invite", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: friendEmail,
-            cartId,
-          }),
-        });
+        await fetch(
+          `${import.meta.env.VITE_API_URL}/api/cart/invite`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: friendEmail,
+              cartId,
+            }),
+          }
+        );
       }
 
       alert("Invites saved");
@@ -73,25 +73,39 @@ function Friendinvite() {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.heading}>Invite Friends</h2>
+      <h2 className={styles.title}>Collaborative Shopping</h2>
+      <p className={styles.subtitle}>
+        Invite friends to add items to this cart.
+      </p>
 
-      <div className={styles.inputBox}>
+      <div className={styles.inputRow}>
         <input
           type="email"
-          placeholder="Enter email"
+          placeholder="Enter email address..."
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <button onClick={handleAdd}>Add</button>
       </div>
 
-      <div className={styles.list}>
-        {friends.map((f, i) => (
-          <div key={i} className={styles.item}>
-            <span>{f}</span>
-            <button onClick={() => handleRemove(i)}>❌</button>
-          </div>
-        ))}
+      <div className={styles.divider}></div>
+
+      <div className={styles.membersRow}>
+        <span className={styles.label}>Party Members</span>
+
+        <div className={styles.avatars}>
+          <div className={styles.addCircle}>+</div>
+
+          {friends.map((f, i) => (
+            <div key={i} className={styles.avatar}>
+              {f.charAt(0).toUpperCase()}
+            </div>
+          ))}
+
+          <span className={styles.you}>YOU</span>
+        </div>
+
+        <span className={styles.manage}>Manage</span>
       </div>
 
       {friends.length > 0 && (

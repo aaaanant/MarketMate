@@ -9,24 +9,25 @@ function Store() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        const apiRes = await fetch("https://dummyjson.com/products?limit=12");
-        const apiData = await apiRes.json();
-        setApiProducts(apiData.products || []);
+  const fetchAll = async () => {
+    try {
+      const apiRes = await fetch("https://dummyjson.com/products?limit=12");
+      const apiData = await apiRes.json();
+      setApiProducts(apiData.products || []);
 
-        const dbRes = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/products/all`
-        );
-        const dbData = await dbRes.json();
-        setDbProducts(dbData || []);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+      const dbRes = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/products/all`
+      );
+      const dbData = await dbRes.json();
+      setDbProducts(dbData || []);
 
-    fetchAll();
-  }, []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  fetchAll();
+}, []);
 
   const getStoreName = (url) => {
     try {
