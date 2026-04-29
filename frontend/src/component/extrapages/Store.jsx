@@ -6,28 +6,35 @@ import Useraddress from "../address/Useraddress";
 function Store() {
   const [apiProducts, setApiProducts] = useState([]);
   const [dbProducts, setDbProducts] = useState([]);
+  const [stores, setStores] = useState([]);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-  const fetchAll = async () => {
-    try {
-      const apiRes = await fetch("https://dummyjson.com/products?limit=12");
-      const apiData = await apiRes.json();
-      setApiProducts(apiData.products || []);
+    const fetchAll = async () => {
+      try {
+        const apiRes = await fetch("https://dummyjson.com/products?limit=12");
+        const apiData = await apiRes.json();
+        setApiProducts(apiData.products || []);
 
-      const dbRes = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/products/all`
-      );
-      const dbData = await dbRes.json();
-      setDbProducts(dbData || []);
+        const dbRes = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/products/all`
+        );
+        const dbData = await dbRes.json();
+        setDbProducts(dbData || []);
 
-    } catch (err) {
-      console.log(err);
-    }
-  };
+        const storeRes = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/store/all`
+        );
+        const storeData = await storeRes.json();
+        setStores(storeData || []);
 
-  fetchAll();
-}, []);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchAll();
+  }, []);
 
   const getStoreName = (url) => {
     try {
@@ -95,6 +102,21 @@ function Store() {
             />
           ))}
         </div>
+
+        {stores.length > 0 && (
+          <>
+            <h2 className={styles.heading}>Nearby Stores</h2>
+            <div className={styles.grid}>
+              {stores.map((store) => (
+                <div key={store._id} className={styles.card}>
+                  <h3>{store.name}</h3>
+                  <p>{store.address}</p>
+                  <p>{store.category}</p>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </>
   );
