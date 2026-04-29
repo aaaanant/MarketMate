@@ -4,10 +4,26 @@ import styles from "../../styles/cartproduct.module.css";
 function Cartproduct({ setTotal }) {
   const [cart, setCart] = useState([]);
 
-  const loadCart = () => {
-    const data = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(data);
-    calculateTotal(data);
+  const loadCart = async () => {
+    const email = localStorage.getItem("email");
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/cart/user/${email}`
+      );
+
+      const data = await res.json();
+
+      if (data && data.items) {
+        setCart(data.items);
+        calculateTotal(data.items);
+      } else {
+        setCart([]);
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -29,22 +45,43 @@ function Cartproduct({ setTotal }) {
     setTotal(total);
   };
 
-  const updateQuantity = (productId, type) => {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const updateQuantity = async (productId, type) => {
+    const email = localStorage.getItem("email");
 
-    cart = cart.map((item) => {
-      if (item.id === productId) {
-        if (type === "inc") item.quantity += 1;
-        if (type === "dec") item.quantity -= 1;
-      }
-      return item;
-    });
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/cart/user/${email}`
+    );
+    const cartData = await res.json();
 
-    cart = cart.filter((item) => item.quantity > 0);
+    let item = cartData.items.find((i) => i.id === productId);
+    if (!item) return;
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-    setCart(cart);
-    calculateTotal(cart);
+    let newQty = item.quantity;
+    if (type === "inc") newQty++;
+    if (type === "dec") newQty--;
+
+    if (newQty <= 0) {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/cart/remove`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cartId: cartData._id,
+          productId,
+        }),
+      });
+    } else {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/cart/update`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cartId: cartData._id,
+          productId,
+          quantity: newQty,
+        }),
+      });
+    }
+
+    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   if (cart.length === 0) {
@@ -55,7 +92,11 @@ function Cartproduct({ setTotal }) {
     <div className={styles.wrapper}>
       {cart.map((item) => (
         <div key={item.id} className={styles.card}>
-          <img src={item.image} alt={item.title} className={styles.image} />
+          <img
+            src={item.image}
+            alt={item.title}
+            className={styles.image}
+          />
 
           <div className={styles.details}>
             <h3>{item.title}</h3>

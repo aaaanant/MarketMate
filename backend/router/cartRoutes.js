@@ -26,21 +26,28 @@ router.get("/:cartId", async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Error" });
   }
-});
-router.post("/add", async (req, res) => {
+});router.post("/add", async (req, res) => {
   try {
     const { cartId, product } = req.body;
 
     const cart = await Cart.findById(cartId);
     if (!cart) return res.json({ message: "Cart not found" });
 
-    const existing = cart.items.find((i) => i.id == product.id);
+    const productId = String(product.id);
+
+    if (!productId) {
+      return res.status(400).json({ message: "Product ID missing" });
+    }
+
+    const existing = cart.items.find(
+      (i) => String(i.id) === productId
+    );
 
     if (existing) {
       existing.quantity += 1;
     } else {
       cart.items.push({
-        id: product.id,
+        id: productId,
         title: product.title,
         price: product.price,
         image: product.image,
@@ -50,7 +57,9 @@ router.post("/add", async (req, res) => {
 
     await cart.save();
     res.json(cart);
+
   } catch (err) {
+    console.log("ADD ERROR:", err);
     res.status(500).json({ message: "Error adding item" });
   }
 });

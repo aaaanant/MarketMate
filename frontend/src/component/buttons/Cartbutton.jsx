@@ -2,9 +2,17 @@ import React from "react";
 import styles from "../../styles/button/cartbutton.module.css";
 
 function Cartbutton({ product, text = "Add to Cart" }) {
+
   const handleAddToCart = async () => {
     try {
       const cartId = localStorage.getItem("cartId");
+
+      const productId = String(product._id || product.id);
+
+      if (!productId) {
+        console.log("Product ID missing:", product);
+        return;
+      }
 
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/cart/add`,
@@ -16,7 +24,7 @@ function Cartbutton({ product, text = "Add to Cart" }) {
           body: JSON.stringify({
             cartId,
             product: {
-              id: product._id,
+              id: productId,
               title: product.title,
               price: product.price,
               image: product.image,
@@ -26,7 +34,7 @@ function Cartbutton({ product, text = "Add to Cart" }) {
       );
 
       const data = await res.json();
-      console.log(data);
+      console.log("ADD RESPONSE:", data);
 
       alert("Added to cart");
       window.dispatchEvent(new Event("cartUpdated"));
