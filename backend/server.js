@@ -11,11 +11,14 @@ const productRoutes = require("./router/productRoutes");
 const authRoutes = require("./router/authRoutes");
 const cartRoutes = require("./router/cartRoutes");
 const storeRoutes = require("./router/storeRoutes");
+const addressRoutes = require("./router/addressRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/store", storeRoutes);
+app.use("/api/address", addressRoutes);
+
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("DB Connected"))
