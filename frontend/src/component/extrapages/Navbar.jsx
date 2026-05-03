@@ -48,6 +48,7 @@ function Navbar({ isDashboard }) {
                   <Link to="/orders">Orders</Link>
                   <Link to="/category">Category</Link>
                   <Link to="/address">Saved Address</Link>
+                  <Link to="/allproduct">All Products</Link>
                 </div>
               )}
             </div>

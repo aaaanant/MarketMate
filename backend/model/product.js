@@ -4,11 +4,9 @@ const productSchema = new mongoose.Schema({
   name: String,
   price: Number,
   image: String,
-
-  storeId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Store",
-  },
+  userEmail: String,
+  mapLink: String,
+  shopName: String
 });
 
 module.exports = mongoose.model("Product", productSchema);

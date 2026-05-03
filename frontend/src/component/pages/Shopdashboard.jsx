@@ -3,25 +3,46 @@ import styles from "../../styles/shopdashboard.module.css";
 
 function Shopdashboard() {
   const role = localStorage.getItem("role");
+  const email = localStorage.getItem("email");
 
   const [product, setProduct] = useState({
     name: "",
     price: "",
-    mapLink: "",
+    image: ""
+  });
+
+  const [globalProduct, setGlobalProduct] = useState({
+    name: "",
+    price: "",
     image: ""
   });
 
   const [products, setProducts] = useState([]);
+  const [requests, setRequests] = useState([]);
   const [search, setSearch] = useState("");
   const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("products")) || [];
+    const saved =
+      JSON.parse(localStorage.getItem(`products_${email}`)) || [];
     setProducts(saved);
 
     const status = localStorage.getItem("storeStatus");
     setIsOnline(status !== "offline");
-  }, []);
+
+    loadRequests();
+  }, [email]);
+
+  const loadRequests = () => {
+    const allRequests =
+      JSON.parse(localStorage.getItem("bargainRequests")) || [];
+
+    const filtered = allRequests.filter(
+      (req) => req.sellerEmail === email
+    );
+
+    setRequests(filtered);
+  };
 
   if (role !== "shopkeeper") {
     return <div className={styles.denied}>Access Denied</div>;
@@ -48,7 +69,8 @@ function Shopdashboard() {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (e) => {
+  // ✅ EXISTING PRODUCT (NEARBY) — SAFE
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!product.name || !product.price) {
@@ -56,29 +78,148 @@ function Shopdashboard() {
       return;
     }
 
-    const updatedProducts = [...products, product];
+    const newProduct = {
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      userEmail: email,
+      mapLink: localStorage.getItem("mapLink"),
+      shopName: localStorage.getItem("shopName")
+    };
 
+    try {
+      await fetch("http://localhost:5000/api/products/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newProduct)
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
+    const updatedProducts = [...products, newProduct];
     setProducts(updatedProducts);
-    localStorage.setItem("products", JSON.stringify(updatedProducts));
+
+    localStorage.setItem(
+      `products_${email}`,
+      JSON.stringify(updatedProducts)
+    );
 
     setProduct({
       name: "",
       price: "",
-      mapLink: "",
       image: ""
     });
+  };
+
+  // ✅ GLOBAL PRODUCT
+  const handleGlobalChange = (e) => {
+    setGlobalProduct({
+      ...globalProduct,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleGlobalImage = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setGlobalProduct((prev) => ({
+        ...prev,
+        image: reader.result
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleGlobalSubmit = (e) => {
+    e.preventDefault();
+
+    if (!globalProduct.name || !globalProduct.price) {
+      alert("Fill all fields");
+      return;
+    }
+
+    const newProduct = {
+      ...globalProduct,
+      userEmail: email
+    };
+
+    // global save
+    const globalExisting =
+      JSON.parse(localStorage.getItem("globalProducts")) || [];
+
+    localStorage.setItem(
+      "globalProducts",
+      JSON.stringify([...globalExisting, newProduct])
+    );
+
+    // inventory save
+    const inventoryExisting =
+      JSON.parse(localStorage.getItem(`products_${email}`)) || [];
+
+    const updatedInventory = [...inventoryExisting, newProduct];
+
+    localStorage.setItem(
+      `products_${email}`,
+      JSON.stringify(updatedInventory)
+    );
+
+    setProducts(updatedInventory);
+
+    setGlobalProduct({
+      name: "",
+      price: "",
+      image: ""
+    });
+
+    alert("Added to Global + Inventory");
   };
 
   const handleDelete = (index) => {
     const updated = products.filter((_, i) => i !== index);
     setProducts(updated);
-    localStorage.setItem("products", JSON.stringify(updated));
+
+    localStorage.setItem(
+      `products_${email}`,
+      JSON.stringify(updated)
+    );
   };
 
   const toggleStore = () => {
     const newStatus = !isOnline;
     setIsOnline(newStatus);
-    localStorage.setItem("storeStatus", newStatus ? "online" : "offline");
+
+    localStorage.setItem(
+      "storeStatus",
+      newStatus ? "online" : "offline"
+    );
+  };
+
+  // ✅ BARGAIN STATUS UPDATE
+  const updateRequestStatus = (index, status) => {
+    const allRequests =
+      JSON.parse(localStorage.getItem("bargainRequests")) || [];
+
+    const target = requests[index];
+
+    const updated = allRequests.map((r) => {
+      if (
+        r.productId === target.productId &&
+        r.buyerEmail === target.buyerEmail
+      ) {
+        return { ...r, status };
+      }
+      return r;
+    });
+
+    localStorage.setItem("bargainRequests", JSON.stringify(updated));
+
+    loadRequests();
   };
 
   const filteredProducts = products.filter((p) =>
@@ -106,25 +247,19 @@ function Shopdashboard() {
           <h2>Add Product</h2>
 
           <form className={styles.form} onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="name"
-              placeholder="Product Name"
-              value={product.name}
-              onChange={handleChange}
-            />
-
-            <input
-              type="text"
-              name="price"
-              placeholder="Price"
-              value={product.price}
-              onChange={handleChange}
-            />
-
+            <input name="name" placeholder="Product Name" onChange={handleChange} />
+            <input name="price" placeholder="Price" onChange={handleChange} />
             <input type="file" onChange={handleImage} />
-
             <button type="submit">Post Product</button>
+          </form>
+
+          <h2 style={{ marginTop: "20px" }}>Add Global Product</h2>
+
+          <form className={styles.form} onSubmit={handleGlobalSubmit}>
+            <input name="name" placeholder="Product Name" onChange={handleGlobalChange} />
+            <input name="price" placeholder="Price" onChange={handleGlobalChange} />
+            <input type="file" onChange={handleGlobalImage} />
+            <button type="submit">Add to All Products</button>
           </form>
         </div>
 
@@ -141,41 +276,43 @@ function Shopdashboard() {
             />
           </div>
 
-          {filteredProducts.length === 0 ? (
-            <div className={styles.empty}>Inventory Empty</div>
+          <div className={styles.grid}>
+            {filteredProducts.map((item, index) => (
+              <div key={index} className={styles.card}>
+                <img src={item.image} alt="" />
+                <h3>{item.name}</h3>
+                <p>₹ {item.price}</p>
+
+                <button onClick={() => handleDelete(index)}>
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* BARGAIN */}
+          <h2 style={{ marginTop: "20px" }}>Bargain Requests</h2>
+
+          {requests.length === 0 ? (
+            <p>No requests</p>
           ) : (
-            <div className={styles.grid}>
-              {filteredProducts.map((item, index) => (
-                <div key={index} className={styles.card}>
-                  <img src={item.image} alt="" />
-                  <h3>{item.name}</h3>
-                  <p>₹ {item.price}</p>
+            requests.map((req, index) => (
+              <div key={index} className={styles.card}>
+                <h4>{req.productName}</h4>
+                <p>Offer: ₹{req.offerPrice}</p>
+                <p>Buyer: {req.buyerEmail}</p>
+                <p>Status: {req.status || "Pending"}</p>
 
-                  <button onClick={() => handleDelete(index)}>
-                    Delete
-                  </button>
-                </div>
-              ))}
-            </div>
+                <button onClick={() => updateRequestStatus(index, "Accepted")}>
+                  Accept
+                </button>
+
+                <button onClick={() => updateRequestStatus(index, "Rejected")}>
+                  Reject
+                </button>
+              </div>
+            ))
           )}
-        </div>
-      </div>
-
-      <div className={styles.helpWrapper}>
-        <div className={styles.helpBox}>
-          <h3>Admin Help</h3>
-          <p>
-            If you face any issues while adding products or managing your store,
-            contact support.
-          </p>
-          <p>Email: &nbsp;
-          <a
-            href="mailto:support@marketmate.com"
-            className={styles.email}
-          >
-            support@marketmate.com
-          </a>
-          </p>
         </div>
       </div>
     </div>

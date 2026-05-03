@@ -30,7 +30,7 @@ const bargainSchema = new mongoose.Schema({
   },
 
   sellerResponsePrice: {
-    type: Number, // counter offer
+    type: Number, 
     default: null,
   },
 

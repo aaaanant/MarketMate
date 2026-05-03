@@ -1,0 +1,322 @@
+.container {
+  display: flex;
+  gap: 40px;
+  padding: 40px;
+  background: #f9f9ff;
+}
+
+/* LEFT */
+.left {
+  flex: 1;
+}
+
+.imageBox {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.imageBox img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.thumbnailRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.thumbnailRow img {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.activeThumb {
+  border: 2px solid #7b61ff;
+}
+
+/* RIGHT */
+.right {
+  flex: 1;
+}
+
+/* TITLE */
+.title {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+/* RATING */
+.rating {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.star {
+  color: #f5a623;
+}
+
+.review {
+  color: #777;
+}
+
+/* PRICE */
+.priceBox {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.price {
+  font-size: 28px;
+  font-weight: bold;
+  color: #6c4eff;
+}
+
+.oldPrice {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.discount {
+  background: #ffecec;
+  color: #ff4d4f;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* BEST TIME */
+.bestTime {
+  background: #f0edff;
+  padding: 12px;
+  border-radius: 10px;
+  color: #6c4eff;
+  margin-bottom: 20px;
+}
+
+/* BUTTONS */
+.buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+/* BARGAIN */
+.bargainBox {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  margin-bottom: 20px;
+}
+
+.bargainInput {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.bargainInput input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.bargainInput button {
+  background: linear-gradient(135deg, #7b61ff, #6c4eff);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.bargainStatus {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.accepted {
+  color: green;
+}
+
+.counter {
+  color: orange;
+}
+
+.rejected {
+  color: red;
+}
+
+/* PRICE INSIGHT */
+.priceInsight {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.mainInsight {
+  background: #e6f7ec;
+  color: #1a7f37;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.trend {
+  color: #ff8c00;
+}
+
+.note {
+  font-size: 12px;
+  color: #999;
+  margin-top: 10px;
+}
+
+/* COMPARISON SECTION */
+.comparisonSection {
+  margin-top: 40px;
+}
+
+.compTitle {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+/* TABLE */
+.table {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+/* HEADER */
+.rowHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 15px;
+  background: #f4f4ff;
+  font-weight: 600;
+}
+
+/* ROW */
+.row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  align-items: center;
+}
+
+/* BEST ROW */
+.best {
+  background: #f0edff;
+}
+
+/* BEST TAG */
+.bestTag {
+  background: #dcd6ff;
+  color: #6c4eff;
+  padding: 3px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  margin-left: 8px;
+}
+
+/* BEST PRICE */
+.bestPrice {
+  color: #1a7f37;
+  font-weight: bold;
+}
+
+/* BUTTONS */
+.viewBtn {
+  border: 1px solid #7b61ff;
+  background: transparent;
+  color: #7b61ff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.claimBtn {
+  background: linear-gradient(135deg, #7b61ff, #6c4eff);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
+/* REVIEW SECTION */
+.reviewSection {
+  margin-top: 40px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.reviewTitle {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.reviewInputBox {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.reviewInput {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.reviewBtn {
+  background: linear-gradient(135deg, #7b61ff, #6c4eff);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.reviewCard {
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.reviewCard span {
+  font-size: 12px;
+  color: #777;
+}
+
+.noReview {
+  color: #999;
+}

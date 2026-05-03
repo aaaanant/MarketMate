@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 
 const storeSchema = new mongoose.Schema({
-  name: String,
-  address: String,
+  shopName: String,
+
+  mapLink: String, 
 
   location: {
     lat: Number,

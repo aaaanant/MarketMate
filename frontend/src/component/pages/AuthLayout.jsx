@@ -71,6 +71,12 @@ const AuthLayout = ({ isLogin }) => {
 
         localStorage.setItem("role", userRole);
 
+        if (data.shop && data.shop.mapLink) {
+          localStorage.setItem("mapLink", data.shop.mapLink);
+        } else {
+          localStorage.removeItem("mapLink");
+        }
+
         if (userRole === "shopkeeper") {
           navigate("/shopdashboard");
         } else {

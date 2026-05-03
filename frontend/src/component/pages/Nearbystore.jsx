@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "../../styles/nearbystore.module.css";
 import Storeproduct from "../productcard/Storeproduct";
+import Buttonleftright from "../buttons/Buttonleftright";
 
 const NearbyStore = () => {
   const [products, setProducts] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
+
+  const scrollRef = useRef();
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -20,7 +23,7 @@ const NearbyStore = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const res = await fetch("https://dummyjson.com/products?limit=4");
+      const res = await fetch("https://dummyjson.com/products?limit=8");
       const data = await res.json();
 
       const productsWithLocation = data.products.map((item, index) => ({
@@ -47,11 +50,9 @@ const NearbyStore = () => {
 
   const getDistance = (lat, lng) => {
     if (!userLocation) return "2.0 km";
-
     const dx = lat - userLocation.lat;
     const dy = lng - userLocation.lng;
     const dist = Math.sqrt(dx * dx + dy * dy) * 111;
-
     return dist.toFixed(1) + " km";
   };
 
@@ -65,21 +66,28 @@ const NearbyStore = () => {
     <div className={styles.container}>
       <h2 className={styles.heading}>Nearby Stores</h2>
 
-      <div className={styles.grid}>
-        {products.map((item) => (
-          <Storeproduct
-            key={item.id}
-            product={{
-              image: item.thumbnail,
-              title: item.title,
-              price: item.price,
-              location: getStoreName(item.mapLink),
-              rating: getRating(),
-              distance: getDistance(item.lat, item.lng),
-              onViewStore: () => handleViewRoute(item.mapLink),
-            }}
-          />
-        ))}
+      <div className={styles.wrapper}>
+        <div className={styles.scrollContainer}>
+          <Buttonleftright scrollRef={scrollRef} />
+
+          <div ref={scrollRef} className={styles.scroll}>
+            {products.map((item) => (
+              <div className={styles.cardWrap} key={item.id}>
+                <Storeproduct
+                  product={{
+                    image: item.thumbnail,
+                    title: item.title,
+                    price: item.price,
+                    location: getStoreName(item.mapLink),
+                    rating: getRating(),
+                    distance: getDistance(item.lat, item.lng),
+                    onViewStore: () => handleViewRoute(item.mapLink),
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

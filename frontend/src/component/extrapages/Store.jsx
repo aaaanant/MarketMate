@@ -6,8 +6,22 @@ import Useraddress from "../address/Useraddress";
 function Store() {
   const [apiProducts, setApiProducts] = useState([]);
   const [dbProducts, setDbProducts] = useState([]);
-  const [stores, setStores] = useState([]);
   const [search, setSearch] = useState("");
+  const [userLocation, setUserLocation] = useState(null);
+
+  const email = localStorage.getItem("email");
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+      },
+      () => {}
+    );
+  }, []);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -17,37 +31,36 @@ function Store() {
         setApiProducts(apiData.products || []);
 
         const dbRes = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/products/all`
+          `${import.meta.env.VITE_API_URL}/api/products/all?email=${email}`
         );
         const dbData = await dbRes.json();
+
         setDbProducts(dbData || []);
-
-        const storeRes = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/store/all`
-        );
-        const storeData = await storeRes.json();
-        setStores(storeData || []);
-
       } catch (err) {
         console.log(err);
       }
     };
 
     fetchAll();
-  }, []);
+  }, [email]);
 
   const getStoreName = (url) => {
     try {
+      if (!url) return "Store";
       const part = url.split("/place/")[1];
-      return part ? part.split("/")[0].replace(/\+/g, " ") : "Store";
+      return decodeURIComponent(part.split("/")[0]).replace(/\+/g, " ");
     } catch {
       return "Store";
     }
   };
 
-  const getRating = () => (Math.random() * (5 - 3.5) + 3.5).toFixed(1);
-  const getDistance = () =>
-    (Math.random() * (3 - 0.5) + 0.5).toFixed(1) + " km";
+  const getDistance = () => {
+    if (!userLocation) return "2.0 km";
+    return "Nearby";
+  };
+
+  const getRating = () =>
+    (Math.random() * (5 - 3.5) + 3.5).toFixed(1);
 
   const filteredDb = dbProducts.filter((item) =>
     item.name?.toLowerCase().includes(search.toLowerCase())
@@ -74,49 +87,48 @@ function Store() {
         <div className={styles.grid}>
           {filteredDb.map((item, index) => (
             <Storeproduct
-              key={`db-${index}`}
+              key={index}
               product={{
-                image: item.image || "https://via.placeholder.com/150",
+                image: item.image,
                 title: item.name,
                 price: item.price,
-                location: "Your Store",
+                location: getStoreName(item.mapLink),
                 rating: getRating(),
                 distance: getDistance(),
-                source: "Your Product",
+                onViewStore: () => {
+                  if (!item.mapLink) {
+                    alert("Map link missing");
+                    return;
+                  }
+
+                  let url = item.mapLink.trim();
+                  if (!url.startsWith("http")) {
+                    url = "https://" + url;
+                  }
+
+                  window.open(url, "_blank");
+                },
               }}
             />
           ))}
 
           {filteredApi.map((item) => (
             <Storeproduct
-              key={`api-${item.id}`}
+              key={item.id}
               product={{
                 image: item.thumbnail,
                 title: item.title,
                 price: Math.round(item.price * 84),
                 location: item.brand || "Store",
                 rating: item.rating || getRating(),
-                distance: getDistance(),
-                source: "API Product",
+                distance: "Nearby",
+                onViewStore: () => {
+                  window.open("https://www.google.com/maps", "_blank");
+                },
               }}
             />
           ))}
         </div>
-
-        {stores.length > 0 && (
-          <>
-            <h2 className={styles.heading}>Nearby Stores</h2>
-            <div className={styles.grid}>
-              {stores.map((store) => (
-                <div key={store._id} className={styles.card}>
-                  <h3>{store.name}</h3>
-                  <p>{store.address}</p>
-                  <p>{store.category}</p>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
       </div>
     </>
   );

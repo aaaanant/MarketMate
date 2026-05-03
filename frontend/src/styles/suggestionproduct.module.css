@@ -1,16 +1,53 @@
 .container {
-  padding: 20px 40px;
-  margin-top: 40px;
+  padding: 40px;
 }
 
-.container h2 {
-  margin-bottom: 15px;
+.heading {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-.row {
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.scrollContainer {
+  position: relative;
+}
+
+.scroll {
   display: flex;
   gap: 20px;
-  overflow-x: hidden;
+  overflow-x: auto;
   scroll-behavior: smooth;
-  padding-bottom: 10px;
+  padding: 20px 10px;
+  scroll-snap-type: x mandatory;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.cardWrap {
+  flex: 0 0 240px;
+  scroll-snap-align: start;
+}
+
+@media (max-width: 768px) {
+  .cardWrap {
+    flex: 0 0 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cardWrap {
+    flex: 0 0 90%;
+  }
 }

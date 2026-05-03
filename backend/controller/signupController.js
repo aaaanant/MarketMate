@@ -22,20 +22,21 @@ const signupUser = async (req, res) => {
       phone,
       password: hashedPassword,
       role: role || "user",
-      shop: role === "shopkeeper" ? shop : undefined
+      shop: role === "shopkeeper"
+        ? {
+            shopName: shop?.shopName || "",
+            mapLink: shop?.mapLink || ""
+          }
+        : undefined
     });
 
-    console.log("Saving user...");
     await newUser.save();
-    console.log("Saved user:", newUser.email);
 
     res.status(201).json({
       message: "Signup successful",
       role: newUser.role
     });
-
   } catch (err) {
-    console.log("SIGNUP ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 };

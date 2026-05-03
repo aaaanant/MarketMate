@@ -1,7 +1,8 @@
 .container {
-  padding: 30px;
+  padding: 20px;
   background: transparent;
   min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .top {
@@ -35,6 +36,9 @@
   background: #e85c1a;
 }
 
+.products {
+  width: 100%;
+}
 
 @media (max-width: 768px) {
   .top {
@@ -42,7 +46,6 @@
   }
 
   .products {
-    max-height: unset;
-    width: 578px;
+    width: 100%;
   }
 }

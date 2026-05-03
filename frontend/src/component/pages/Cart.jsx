@@ -19,6 +19,20 @@ function Cart() {
       return;
     }
 
+    const fetchTotal = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/price/${email}`
+        );
+
+        const data = await res.json();
+        setTotal(data.total || 0);
+
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
     const fetchCart = async () => {
       try {
         const res = await fetch(
@@ -43,6 +57,8 @@ function Cart() {
           localStorage.setItem("cartId", newCart._id);
         }
 
+        await fetchTotal(); // 🔥 important
+
         setLoading(false);
 
       } catch (err) {
@@ -53,7 +69,6 @@ function Cart() {
 
     fetchCart();
   }, []);
-
 
   return (
     <div className={styles.container}>

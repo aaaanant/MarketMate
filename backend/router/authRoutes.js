@@ -1,11 +1,9 @@
 const express = require("express");
 const router = express.Router();
-
 const signupUser = require("../controller/signupController");
 const loginUser = require("../controller/loginController");
 const authMiddleware = require("../middleware/authMiddleware");
 const User = require("../model/user");
-
 router.post("/signup", signupUser);
 router.post("/login", loginUser);
 router.get("/me", authMiddleware, async (req, res) => {
@@ -27,7 +25,6 @@ router.get("/me", authMiddleware, async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
 router.get("/all", async (req, res) => {
   try {
     const users = await User.find().select("-password");
@@ -37,5 +34,4 @@ router.get("/all", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
 module.exports = router;
