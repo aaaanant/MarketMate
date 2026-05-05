@@ -17,7 +17,6 @@ function Insidecard() {
 
   const [selectedImage, setSelectedImage] = useState(images[0]);
   const [offerPrice, setOfferPrice] = useState("");
-
   const [reviewText, setReviewText] = useState("");
   const [reviews, setReviews] = useState([]);
 
@@ -34,6 +33,10 @@ function Insidecard() {
     Math.floor(Math.random() * 3)
   ];
 
+  const priceChange = Math.floor(Math.random() * 10 - 5); 
+  const trend = priceChange > 0 ? "UP 📈" : "DOWN 📉";
+  const confidence = Math.floor(Math.random() * 40 + 60); 
+
   useEffect(() => {
     const allReviews =
       JSON.parse(localStorage.getItem("reviews")) || [];
@@ -45,10 +48,28 @@ function Insidecard() {
     setReviews(productReviews);
   }, [product._id]);
 
-  const handleBargain = () => {
+  const handleBargain = async () => {
     if (!offerPrice) {
       alert("Enter price");
       return;
+    }
+
+    try {
+      await fetch("http://localhost:5000/api/bargain", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          productId: product._id,
+          offeredPrice: offerPrice,
+          originalPrice: product.price,
+          userId: localStorage.getItem("userId"),
+          storeId: product.userEmail
+        })
+      });
+    } catch (err) {
+      console.log(err);
     }
 
     const request = {
@@ -97,9 +118,14 @@ function Insidecard() {
 
   return (
     <div className={styles.container}>
+      
       <div className={styles.left}>
         <div className={styles.imageBox}>
-          <img src={selectedImage || product.image} alt="product" />
+          <img
+            src={selectedImage || product.image}
+            alt="product"
+            className={styles.mainImage}
+          />
         </div>
 
         <div className={styles.thumbnailRow}>
@@ -133,8 +159,17 @@ function Insidecard() {
           <span className={styles.discount}>10% OFF</span>
         </div>
 
-        <div className={styles.bestTime}>
-          Best time to buy. This price is lower than usual.
+        <div className={styles.predictionBox}>
+          <h3>Price Prediction</h3>
+          <p>
+            Trend: <b>{trend}</b>
+          </p>
+          <p>
+            Expected Change: ₹{priceChange}
+          </p>
+          <p>
+            Confidence: {confidence}%
+          </p>
         </div>
 
         <div className={styles.buttons}>
@@ -142,20 +177,32 @@ function Insidecard() {
           <Buynow product={product} />
         </div>
 
-        {/* BARGAIN */}
-        <div className={styles.bargainBox}>
-          <h3>Try Bargaining</h3>
+       <div className={styles.bargainBox}>
+  <h3>Try Bargaining</h3>
+  <p className={styles.bargainSub}>
+    Negotiate with seller and get better price
+  </p>
 
-          <div className={styles.bargainInput}>
-            <input
-              type="number"
-              placeholder="Enter your price"
-              value={offerPrice}
-              onChange={(e) => setOfferPrice(e.target.value)}
-            />
-            <button onClick={handleBargain}>Negotiate</button>
-          </div>
-        </div>
+  <div className={styles.suggestPrice}>
+    Suggested: ₹{basePrice - 100}
+  </div>
+
+  <div className={styles.bargainInput}>
+    <input
+      type="number"
+      value={offerPrice}
+      onChange={(e) => setOfferPrice(e.target.value)}
+      placeholder="Enter your offer"
+    />
+    <button onClick={handleBargain}>Send Offer</button>
+  </div>
+
+  <div className={styles.bargainStatus}>
+    <span className={styles.accepted}>Accepted</span>
+    <span className={styles.counter}>Counter</span>
+    <span className={styles.rejected}>Rejected</span>
+  </div>
+</div>
 
         {/* COMPARISON */}
         <div className={styles.comparisonSection}>
@@ -173,39 +220,21 @@ function Insidecard() {
               <span>Amazon</span>
               <span>₹{amazonPrice}</span>
               <span>{amazonDelivery}</span>
-              <button
-                className={styles.viewBtn}
-                onClick={() =>
-                  window.open("https://www.amazon.in", "_blank")
-                }
-              >
-                View Deal
-              </button>
+              <button className={styles.viewBtn}>View</button>
             </div>
 
             <div className={`${styles.row} ${styles.best}`}>
-              <span>
-                MarketMate <span className={styles.bestTag}>Best</span>
-              </span>
+              <span>MarketMate</span>
               <span className={styles.bestPrice}>₹{basePrice}</span>
               <span>Today</span>
-              <button className={styles.claimBtn}>
-                Claim
-              </button>
+              <button className={styles.claimBtn}>Best</button>
             </div>
 
             <div className={styles.row}>
               <span>Flipkart</span>
               <span>₹{flipkartPrice}</span>
               <span>{flipkartDelivery}</span>
-              <button
-                className={styles.viewBtn}
-                onClick={() =>
-                  window.open("https://www.flipkart.com", "_blank")
-                }
-              >
-                View Deal
-              </button>
+              <button className={styles.viewBtn}>View</button>
             </div>
           </div>
         </div>
@@ -217,10 +246,10 @@ function Insidecard() {
           <div className={styles.reviewInputBox}>
             <input
               type="text"
-              placeholder="Write your review..."
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
               className={styles.reviewInput}
+              placeholder="Write review"
             />
             <button
               onClick={handleReviewSubmit}
@@ -233,10 +262,10 @@ function Insidecard() {
           {reviews.length === 0 ? (
             <p className={styles.noReview}>No reviews yet</p>
           ) : (
-            reviews.map((rev, index) => (
-              <div key={index} className={styles.reviewCard}>
-                <p>{rev.text}</p>
-                <span>{rev.user}</span>
+            reviews.map((r, i) => (
+              <div key={i} className={styles.reviewCard}>
+                <p>{r.text}</p>
+                <span>{r.user}</span>
               </div>
             ))
           )}

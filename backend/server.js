@@ -13,6 +13,7 @@ const cartRoutes = require("./router/cartRoutes");
 const storeRoutes = require("./router/storeRoutes");
 const addressRoutes = require("./router/addressRoutes");
 const priceRoutes = require("./router/pricesummaryRoutes");
+const bargainRoutes = require("./router/bargainRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/cart", cartRoutes);
@@ -20,6 +21,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/store", storeRoutes);
 app.use("/api/address", addressRoutes);
 app.use("/api/price", priceRoutes);
+app.use("/api/bargain", bargainRoutes);
+
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("DB Connected"))

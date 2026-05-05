@@ -40,7 +40,7 @@ function Footer({ isDashboard }) {
         <div className={styles.section}>
           <h3>Contact</h3>
           <p>support@marketmate.com</p>
-          <p>+91 XXXXX XXXXX</p>
+          <p>+91 987654321</p>
         </div>
       </div>
 

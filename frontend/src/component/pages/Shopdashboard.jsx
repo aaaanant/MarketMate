@@ -33,15 +33,25 @@ function Shopdashboard() {
     loadRequests();
   }, [email]);
 
-  const loadRequests = () => {
-    const allRequests =
-      JSON.parse(localStorage.getItem("bargainRequests")) || [];
+  const loadRequests = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/bargain/${email}`
+      );
+      const dbData = await res.json();
 
-    const filtered = allRequests.filter(
-      (req) => req.sellerEmail === email
-    );
+      const localData =
+        JSON.parse(localStorage.getItem("bargainRequests")) || [];
 
-    setRequests(filtered);
+      setRequests([...localData, ...dbData]);
+    } catch (err) {
+      console.log(err);
+
+      const localData =
+        JSON.parse(localStorage.getItem("bargainRequests")) || [];
+
+      setRequests(localData);
+    }
   };
 
   if (role !== "shopkeeper") {
@@ -69,7 +79,6 @@ function Shopdashboard() {
     reader.readAsDataURL(file);
   };
 
-  // ✅ EXISTING PRODUCT (NEARBY) — SAFE
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -114,7 +123,6 @@ function Shopdashboard() {
     });
   };
 
-  // ✅ GLOBAL PRODUCT
   const handleGlobalChange = (e) => {
     setGlobalProduct({
       ...globalProduct,
@@ -149,7 +157,6 @@ function Shopdashboard() {
       userEmail: email
     };
 
-    // global save
     const globalExisting =
       JSON.parse(localStorage.getItem("globalProducts")) || [];
 
@@ -158,7 +165,6 @@ function Shopdashboard() {
       JSON.stringify([...globalExisting, newProduct])
     );
 
-    // inventory save
     const inventoryExisting =
       JSON.parse(localStorage.getItem(`products_${email}`)) || [];
 
@@ -200,7 +206,6 @@ function Shopdashboard() {
     );
   };
 
-  // ✅ BARGAIN STATUS UPDATE
   const updateRequestStatus = (index, status) => {
     const allRequests =
       JSON.parse(localStorage.getItem("bargainRequests")) || [];
@@ -261,6 +266,26 @@ function Shopdashboard() {
             <input type="file" onChange={handleGlobalImage} />
             <button type="submit">Add to All Products</button>
           </form>
+          {/* 🔥 ADMIN HELP / SUPPORT BOX */}
+<div className={styles.adminSupportBox}>
+  <h3>Need Help?</h3>
+  <p className={styles.supportText}>
+    Facing issues with bargaining or product or in others? Contact admin directly.
+  </p>
+
+  <div className={styles.contactInfo}>
+    <p>
+      Email: <span>support@marketmate.com</span>
+    </p>
+    <p>
+      Phone: <span>+91 9876543210</span>
+    </p>
+  </div>
+
+  <button className={styles.contactBtn}>
+    Contact Support
+  </button>
+</div>
         </div>
 
         <div className={styles.right}>
@@ -290,31 +315,44 @@ function Shopdashboard() {
             ))}
           </div>
 
-          {/* BARGAIN */}
+          {/* ✅ FIXED BARGAIN UI */}
           <h2 style={{ marginTop: "20px" }}>Bargain Requests</h2>
 
-          {requests.length === 0 ? (
-            <p>No requests</p>
-          ) : (
-            requests.map((req, index) => (
-              <div key={index} className={styles.card}>
-                <h4>{req.productName}</h4>
-                <p>Offer: ₹{req.offerPrice}</p>
-                <p>Buyer: {req.buyerEmail}</p>
-                <p>Status: {req.status || "Pending"}</p>
+          <div className={styles.bargainWrapper}>
+            {requests.map((req, index) => (
+              <div key={index} className={styles.bargainCard}>
+                <div>
+                  <h4>{req.productName || "Product"}</h4>
+                  <p>Offer: ₹{req.offerPrice || req.offeredPrice}</p>
+                  <p>Status: {req.status || "Pending"}</p>
+                </div>
 
-                <button onClick={() => updateRequestStatus(index, "Accepted")}>
-                  Accept
-                </button>
+                <div className={styles.bargainBtns}>
+                  <button
+                    className={styles.acceptBtn}
+                    onClick={() =>
+                      updateRequestStatus(index, "Accepted")
+                    }
+                  >
+                    Accept
+                  </button>
 
-                <button onClick={() => updateRequestStatus(index, "Rejected")}>
-                  Reject
-                </button>
+                  <button
+                    className={styles.rejectBtn}
+                    onClick={() =>
+                      updateRequestStatus(index, "Rejected")
+                    }
+                  >
+                    Reject
+                  </button>
+                </div>
               </div>
-            ))
-          )}
+            ))}
+          </div>
+
         </div>
       </div>
+      
     </div>
   );
 }
